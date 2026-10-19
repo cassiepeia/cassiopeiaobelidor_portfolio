@@ -1,0 +1,60 @@
+/* Animated Topographic Contour Canvas */
+#topo-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.55;
+}
+
+.dark #topo-canvas {
+  opacity: 0.25;
+}
+
+/* 3D Perspective for Cards & Carousel */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(150, 150, 150, 0.3);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(150, 150, 150, 0.5);
+}
+
+/* Realistic iPhone 16 Pro styling */
+.iphone-frame {
+  width: 390px;
+  height: 800px;
+  border-radius: 54px;
+  box-shadow: 0 0 0 10px #21262d, 0 0 0 12px #333d4b, 0 25px 60px -10px rgba(0,0,0,0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Hide scrollbar for clean phone feel */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+

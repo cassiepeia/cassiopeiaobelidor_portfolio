@@ -1,2353 +1,602 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-  <title>Cassiopeia Obelidor — UI/UX Designer </title>
-  
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cassiopeia Obelidor — UI/UX Designer Portfolio</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Lucide Icons -->
+  <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
-
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        screens: {
-          'xs': '380px',
-          'sm': '640px',
-          'md': '768px',
-          'lg': '1024px',
-          'xl': '1280px',
-          '2xl': '1536px',
-        },
-        extend: {
-          fontFamily: {
-            sans: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif'],
-            mono: ['"JetBrains Mono"', 'monospace'],
-          },
-          colors: {
-            brand: {
-              50: '#f0f9ff',
-              100: '#e0f2fe',
-              400: '#38bdf8',
-              500: '#0ea5e9',
-              600: '#0284c7',
-              700: '#0369a1',
-            },
-            surface: {
-              cream: '#f8fafc',
-              dark: '#080d1a',
-              cardLight: '#ffffff',
-              cardDark: '#0f172a',
-              borderLight: '#e2e8f0',
-              borderDark: '#1e293b'
-            }
-          },
-          boxShadow: {
-            'bento': '0 4px 24px -2px rgba(0, 0, 0, 0.04), 0 2px 8px -2px rgba(0, 0, 0, 0.02)',
-            'bento-hover': '0 20px 40px -8px rgba(14, 165, 233, 0.14), 0 4px 14px -2px rgba(0, 0, 0, 0.05)',
-            'phone': '0 25px 60px -15px rgba(0,0,0,0.4), 0 0 0 10px #1e293b, 0 0 0 12px #334155',
-            'watch': '0 20px 50px -10px rgba(0,0,0,0.5), 0 0 0 8px #1e293b, 0 0 0 10px #334155',
-            'tablet': '0 30px 70px -15px rgba(0,0,0,0.35), 0 0 0 12px #1e293b, 0 0 0 14px #334155'
-          }
-        }
-      }
-    }
-  </script>
-
-  <style>
-    /* Animated Contour Canvas */
-    #contourCanvas {
-      position: fixed;
-      inset: 0;
-      width: 100vw;
-      height: 100vh;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* 3D Carousel Stage */
-    .carousel-stage {
-      perspective: 1200px;
-      transform-style: preserve-3d;
-      touch-action: pan-y;
-      user-select: none;
-    }
-
-    .carousel-item {
-      transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.5s ease, filter 0.5s ease;
-      will-change: transform, opacity;
-      transform-style: preserve-3d;
-      backface-visibility: hidden;
-    }
-
-    /* Card Stack 3D Fan Out */
-    .card-stack .stack-1 {
-      transform: translate(-10px, -4px) rotate(-9deg);
-      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    .card-stack .stack-2 {
-      transform: translate(10px, -2px) rotate(9deg);
-      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    .card-stack .stack-3 {
-      transform: translate(0px, 0px) rotate(0deg);
-      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    .card-stack:hover .stack-1,
-    .card-stack:active .stack-1 {
-      transform: translate(-22px, -12px) rotate(-16deg);
-    }
-    .card-stack:hover .stack-2,
-    .card-stack:active .stack-2 {
-      transform: translate(22px, -10px) rotate(16deg);
-    }
-    .card-stack:hover .stack-3,
-    .card-stack:active .stack-3 {
-      transform: translate(0px, -16px) rotate(0deg) scale(1.05);
-    }
-
-    /* Infinite Marquee */
-    @keyframes marquee {
-      0% { transform: translateX(0%); }
-      100% { transform: translateX(-50%); }
-    }
-    .animate-marquee {
-      display: flex;
-      width: max-content;
-      animation: marquee 32s linear infinite;
-    }
-    .animate-marquee:hover {
-      animation-play-state: paused;
-    }
-
-    /* Scrollbar cleanup */
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-    /* Custom Range Slider */
-    input[type=range] {
-      accent-color: #0ea5e9;
-    }
-  </style>
-</head>
-<body class="bg-surface-cream dark:bg-surface-dark text-slate-800 dark:text-slate-100 font-sans antialiased min-h-screen relative overflow-x-hidden selection:bg-sky-500 selection:text-white transition-colors duration-300">
-
-  <!-- Interactive Organic Contour Canvas -->
-  <canvas id="contourCanvas"></canvas>
-
-  <!-- ==============================================
-       MOBILE TOP APP BAR (< 1024px)
-  =================================================== -->
-  <header class="lg:hidden sticky top-0 z-40 bg-white/85 dark:bg-slate-900/85 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800 px-4 py-3 flex items-center justify-between shadow-xs">
-    <div class="flex items-center gap-2.5">
-      <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-sky-400 to-indigo-600 p-0.5 shadow-sm">
-        <div class="w-full h-full rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden">
-          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80" alt="Avatar" class="w-full h-full object-cover">
-        </div>
-      </div>
-      <div>
-        <div class="flex items-center gap-1 font-bold text-sm text-slate-900 dark:text-white leading-tight">
-          <span>Cassiopeia Obelidor</span>
-          <i data-lucide="badge-check" class="w-4 h-4 text-sky-500 fill-sky-500 text-white"></i>
-        </div>
-        <p class="text-[11px] text-slate-500 dark:text-slate-400">@obelidorcassiopeia</p>
-      </div>
-    </div>
-
-    <div class="flex items-center gap-2">
-      <!-- Quick Schedule Call -->
-      <button onclick="scrollToSection('contact'); switchContactTab('schedule');" class="px-3 py-1.5 rounded-full bg-sky-50 dark:bg-sky-950/80 border border-sky-200 dark:border-sky-800 text-sky-600 dark:text-sky-400 text-xs font-semibold flex items-center gap-1.5">
-        <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
-        <span class="hidden xs:inline">Book Call</span>
-      </button>
-
-      <!-- Theme Switcher -->
-      <button onclick="toggleTheme()" title="Toggle Theme" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
-        <i data-lucide="moon" class="w-4 h-4 mobile-theme-icon"></i>
-      </button>
-
-      <!-- Mobile Menu Toggle -->
-      <button onclick="toggleMobileMenu()" class="p-2 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900">
-        <i data-lucide="menu" id="mobileMenuIcon" class="w-4 h-4"></i>
-      </button>
-    </div>
-  </header>
-
-  <!-- Mobile Drawer Overlay & Sheet -->
-  <div id="mobileDrawerOverlay" onclick="toggleMobileMenu()" class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-50 hidden opacity-0 transition-opacity lg:hidden"></div>
+  <!-- Google Fonts: Plus Jakarta Sans & Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   
-  <div id="mobileDrawer" class="fixed top-0 right-0 bottom-0 w-72 max-w-[85vw] bg-white dark:bg-slate-900 border-l border-slate-200 dark:border-slate-800 z-50 p-6 flex flex-col justify-between transform translate-x-full transition-transform duration-300 ease-in-out lg:hidden shadow-2xl">
-    <div>
-      <div class="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800">
-        <div class="font-bold text-sm text-slate-900 dark:text-white">Navigation</div>
-        <button onclick="toggleMobileMenu()" class="p-1 rounded-lg text-slate-500 hover:text-slate-800 dark:hover:text-white">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
-      </div>
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-cream-100 dark:bg-charcoal-900 text-slate-800 dark:text-slate-100 font-sans antialiased min-h-screen transition-colors duration-300 relative selection:bg-accent-orange selection:text-white">
 
-      <nav class="mt-6 space-y-1">
-        <button onclick="mobileNavigate('home')" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
-          <i data-lucide="layout-grid" class="w-4 h-4 text-orange-500"></i>
-          <span>Home (Bento)</span>
-        </button>
-        <button onclick="mobileNavigate('projects-section')" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
-          <i data-lucide="folder-kanban" class="w-4 h-4 text-sky-500"></i>
-          <span>Projects Gallery</span>
-        </button>
-        <button onclick="mobileNavigate('services-section')" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
-          <i data-lucide="calculator" class="w-4 h-4 text-amber-500"></i>
-          <span>Services & Calculator</span>
-        </button>
-        <button onclick="mobileNavigate('showcase-section')" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
-          <i data-lucide="smartphone" class="w-4 h-4 text-indigo-500"></i>
-          <span>3D Showcase Lab</span>
-        </button>
-        <button onclick="mobileNavigate('about-section')" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
-          <i data-lucide="user" class="w-4 h-4 text-emerald-500"></i>
-          <span>About & Career Story</span>
-        </button>
-        <button onclick="mobileNavigate('contact-section')" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
-          <i data-lucide="message-square-quote" class="w-4 h-4 text-rose-500"></i>
-          <span>Contact & Scheduler</span>
-        </button>
-      </nav>
-    </div>
+  <!-- Background Topographic Lines Canvas -->
+  <canvas id="topo-canvas"></canvas>
 
-    <div class="pt-4 border-t border-slate-200 dark:border-slate-800 space-y-3">
-      <button onclick="copyToClipboard('obelidorcassiopeia@gmail.com', 'Email copied!')" class="w-full py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold flex items-center justify-center gap-2">
-        <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-        <span>Copy obelidorcassiopeia@gmail.com</span>
-      </button>
-      <div class="text-[11px] text-slate-400 text-center">© 2026 Cassiopeia Obelidor. All rights reserved.</div>
-    </div>
-  </div>
+  <!-- ========================================================================= -->
+  <!-- MAIN CONTAINER (Bento Desktop View vs Phone Mockup View) -->
+  <!-- ========================================================================= -->
+  <main class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-8 pb-20">
 
-  <!-- ==============================================
-       MAIN LAYOUT WRAPPER
-  =================================================== -->
-  <div class="relative z-10 flex min-h-screen flex-col lg:flex-row max-w-[1780px] mx-auto">
-
-    <!-- DESKTOP PROFILE RAIL (Sticky Sidebar) -->
-    <aside id="sidebar" class="hidden lg:flex w-72 xl:w-80 shrink-0 sticky top-0 h-screen flex-col justify-between p-6 xl:py-8 xl:px-7 border-r border-slate-200/80 dark:border-slate-800/80 backdrop-blur-md bg-white/75 dark:bg-[#0b1120]/75 z-30 transition-all">
+    <!-- DESKTOP BENTO VIEW -->
+    <div id="desktop-view" class="flex flex-col lg:flex-row gap-6 transition-opacity duration-300">
       
-      <!-- Profile Block -->
-      <div class="flex flex-col items-center text-center">
-        <!-- Avatar Ring -->
-        <div class="relative group cursor-pointer mb-3">
-          <div class="w-24 h-24 xl:w-28 xl:h-28 rounded-full p-1 bg-gradient-to-tr from-sky-400 via-indigo-400 to-purple-500 shadow-xl shadow-sky-500/10 group-hover:scale-105 transition-transform duration-300">
-            <div class="w-full h-full rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 flex items-center justify-center relative">
-              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=350&q=80" alt="Cassiopeia Obelidor" class="w-full h-full object-cover">
-            </div>
+      <!-- LEFT PROFILE RAIL (Sidebar) -->
+      <aside class="w-full lg:w-72 shrink-0 flex flex-col justify-between">
+        <div class="backdrop-blur-md bg-white/75 dark:bg-charcoal-800/80 border border-slate-200/80 dark:border-slate-700/80 rounded-3xl p-6 shadow-bento flex flex-col items-center text-center">
+          
+          <!-- Avatar Silhouette / Picture -->
+<div class="relative group cursor-pointer mb-4">
+  <div id="sidebar-avatar" class="w-28 h-28 rounded-full overflow-hidden border-2 border-slate-200 dark:border-slate-600 bg-slate-100 dark:bg-slate-800 flex items-center justify-center shadow-inner relative">
+    <img 
+      src="profile.jpg" 
+      alt="Cassiopeia Obelidor" 
+      class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
+    />
+  </div>
+</div>
+
+          <!-- Name & Verification Tag -->
+          <div class="flex items-center justify-center gap-1.5 mb-1">
+            <h2 id="live-name" class="font-display font-bold text-xl text-slate-900 dark:text-white">CASSIOPEIA OBELIDOR</h2>
+            <i data-lucide="badge-check" class="w-5 h-5 text-blue-500 fill-blue-500 text-white"></i>
           </div>
-          <!-- Verified Badge -->
-          <div class="absolute bottom-1 right-2 bg-white dark:bg-slate-900 rounded-full p-0.5 shadow-md">
-            <div class="bg-sky-500 text-white rounded-full w-5 h-5 flex items-center justify-center">
-              <i data-lucide="check" class="w-3 h-3 stroke-[3]"></i>
-            </div>
+          <p id="live-handle" class="text-xs text-slate-500 dark:text-slate-400 font-medium mb-3">@cassiopeia.ux</p>
+
+          <!-- Enhanced Social & Theme Row (Visually Appealing) -->
+          <div class="flex items-center justify-center gap-2.5 mb-6">
+            <!-- GitHub -->
+            <a href="https://github.com/cassiepeia" target="_blank" rel="noreferrer" 
+               class="group relative w-10 h-10 rounded-2xl bg-white/80 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 shadow-xs hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center transition-all duration-200" 
+               title="GitHub">
+              <div class="absolute inset-0 rounded-2xl bg-slate-900/5 dark:bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <svg class="w-4 h-4 text-slate-700 dark:text-slate-300 group-hover:text-slate-950 dark:group-hover:text-white transition-colors fill-current" viewBox="0 0 24 24">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+              </svg>
+            </a>
+
+            <!-- Dribbble -->
+            <a href="https://dribbble.com" target="_blank" rel="noreferrer" 
+               class="group relative w-10 h-10 rounded-2xl bg-white/80 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 shadow-xs hover:shadow-md hover:shadow-pink-500/10 hover:-translate-y-0.5 active:translate-y-0 hover:border-pink-300 dark:hover:border-pink-800/60 flex items-center justify-center transition-all duration-200" 
+               title="Dribbble">
+              <div class="absolute inset-0 rounded-2xl bg-pink-500/5 dark:bg-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <svg class="w-4 h-4 text-slate-500 dark:text-slate-400 group-hover:text-pink-500 transition-colors fill-current" viewBox="0 0 24 24">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c5.51 0 10-4.48 10-10S17.51 2 12 2zm6.605 4.61a8.502 8.502 0 011.93 5.31c-.26-.05-2.7-.51-5.27-.22-.09-.21-.18-.42-.28-.63-1.42-2.98-2.98-5.32-3.14-5.56 2.61-.41 4.98.05 6.76 1.1zm-8.24-2.88c.17.26 1.7 2.57 3.1 5.51-3.9 1.06-7.46 1.07-7.85 1.07a8.52 8.52 0 014.75-6.58zm-6.9 8.27v-.23c.31 0 4.31-.03 8.5-1.19.23.47.44.95.63 1.42-2.33 6.95-2.48 7.42-2.52 7.54A8.505 8.505 0 013.465 12zm8.505 8.54c.08-.24.49-1.43 2.45-7.39 2.48-.3 4.8.15 5.09.21a8.513 8.513 0 01-7.54 7.18zm9.05-3.08c-.37-.09-2.35-.49-4.66-.25 1.78-5.06 2.49-7.39 2.56-7.61a8.47 8.47 0 012.1 7.86z"/>
+              </svg>
+            </a>
+
+            <!-- LinkedIn -->
+            <a href="https://www.linkedin.com/in/cassiopeia-obelidor/" target="_blank" rel="noreferrer" 
+               class="group relative w-10 h-10 rounded-2xl bg-white/80 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 shadow-xs hover:shadow-md hover:shadow-blue-500/10 hover:-translate-y-0.5 active:translate-y-0 hover:border-blue-300 dark:hover:border-blue-800/60 flex items-center justify-center transition-all duration-200" 
+               title="LinkedIn">
+              <div class="absolute inset-0 rounded-2xl bg-blue-500/5 dark:bg-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <svg class="w-4 h-4 text-slate-500 dark:text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors fill-current" viewBox="0 0 24 24">
+                <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+              </svg>
+            </a>
+
+            <!-- Figma -->
+            <a href="https://www.figma.com/@cassie_obelidor" target="_blank" rel="noreferrer" 
+               class="group relative w-10 h-10 rounded-2xl bg-white/80 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 shadow-xs hover:shadow-md hover:shadow-rose-500/10 hover:-translate-y-0.5 active:translate-y-0 hover:border-rose-300 dark:hover:border-rose-800/60 flex items-center justify-center transition-all duration-200" 
+               title="Figma">
+              <div class="absolute inset-0 rounded-2xl bg-rose-500/5 dark:bg-rose-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <svg class="w-4 h-4 text-slate-500 dark:text-slate-400 group-hover:text-rose-500 transition-colors fill-current" viewBox="0 0 24 24">
+                <path d="M8 2a4 4 0 0 0-4 4v4a4 4 0 0 0 4 4h4V2H8zm8 0h-4v6h4a3 3 0 1 0 0-6zm0 6h-4v6h4a3 3 0 1 0 0-6zm-8 6a4 4 0 0 0-4 4 4 4 0 0 0 6.83 2.83L12 18v-4H8zm4 0v6a3 3 0 1 0 3-3h-3v-3z"/>
+              </svg>
+            </a>
+
+            <!-- Divider Pill -->
+            <div class="h-5 w-px bg-slate-200 dark:bg-slate-700 mx-0.5"></div>
+
+            <!-- Theme Toggle (Moon / Sun) -->
+            <button id="theme-toggle" 
+                    class="group relative w-10 h-10 rounded-2xl bg-white/80 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 shadow-xs hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 hover:border-amber-300 dark:hover:border-amber-500/50 flex items-center justify-center transition-all duration-200" 
+                    title="Toggle Dark/Light Mode">
+              <div class="absolute inset-0 rounded-2xl bg-amber-500/5 dark:bg-amber-400/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <!-- Moon Icon (Light Mode) -->
+              <svg id="theme-icon-moon" class="w-4 h-4 text-slate-600 group-hover:text-amber-500 transition-colors block dark:hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+              </svg>
+              <!-- Sun Icon (Dark Mode) -->
+              <svg id="theme-icon-sun" class="w-4 h-4 text-slate-400 group-hover:text-amber-400 transition-colors hidden dark:block" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="5"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+              </svg>
+            </button>
           </div>
-        </div>
 
-        <!-- Name & Handle -->
-        <div class="flex items-center gap-1.5 justify-center">
-          <h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">Cassiopeia Obelidor</h1>
-          <i data-lucide="badge-check" class="w-4 h-4 text-sky-500 fill-sky-500 text-white"></i>
-        </div>
-        <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 mt-0.5">@obelidorcassiopeia</p>
-        <span class="inline-flex items-center gap-1.5 mt-2 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
-          Available for Q3/Q4 Projects
-        </span>
+          <!-- Navigation Links -->
+          <nav class="w-full space-y-1 text-left mb-6">
+            <a href="#hero" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-cream-200/80 dark:bg-slate-700 text-slate-900 dark:text-white font-medium text-sm transition">
+              <i data-lucide="home" class="w-4 h-4 text-accent-orange"></i>
+              Home
+            </a>
+            <a href="#card-projects" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/40 text-sm font-medium transition">
+              <i data-lucide="folder-kanban" class="w-4 h-4"></i>
+              Projects
+            </a>
+            <a href="#card-services" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/40 text-sm font-medium transition">
+              <i data-lucide="layers" class="w-4 h-4"></i>
+              Services
+            </a>
+            <a href="#card-credentials" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/40 text-sm font-medium transition">
+              <i data-lucide="award" class="w-4 h-4"></i>
+              Credentials
+            </a>
+            <a href="#card-about" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/40 text-sm font-medium transition">
+              <i data-lucide="user" class="w-4 h-4"></i>
+              About
+            </a>
+            <button onclick="openContactModal()" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/40 text-sm font-medium transition text-left">
+              <i data-lucide="message-square" class="w-4 h-4"></i>
+              FAQs / Contact
+            </button>
+          </nav>
 
-        <!-- Social Icons Row -->
-        <div class="flex items-center justify-center gap-1.5 mt-4">
-          <button onclick="copyToClipboard('https://github.com/cassiepeia', 'GitHub profile link copied!')" title="GitHub" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center hover:bg-sky-50 hover:text-sky-600 dark:hover:bg-slate-700 transition-all border border-slate-200/60 dark:border-slate-700">
-            <i data-lucide="github" class="w-3.5 h-3.5"></i>
-          </button>
-          <button onclick="copyToClipboard('https://www.linkedin.com/in/cassiopeia-obelidor/', 'LinkedIn link copied!')" title="LinkedIn" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center hover:bg-sky-50 hover:text-sky-600 dark:hover:bg-slate-700 transition-all border border-slate-200/60 dark:border-slate-700">
-            <i data-lucide="linkedin" class="w-3.5 h-3.5"></i>
-          </button>
-          <button onclick="copyToClipboard('https://dribbble.com/cassiopeia-obelidor', 'Dribbble link copied!')" title="Dribbble" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center hover:bg-pink-50 hover:text-pink-600 dark:hover:bg-slate-700 transition-all border border-slate-200/60 dark:border-slate-700">
-            <i data-lucide="dribbble" class="w-3.5 h-3.5"></i>
-          </button>
-          <button onclick="copyToClipboard('https://x.com/obelidorcassiopeia', 'X / Twitter handle copied!')" title="X / Twitter" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-700 transition-all border border-slate-200/60 dark:border-slate-700">
-            <i data-lucide="twitter" class="w-3.5 h-3.5"></i>
-          </button>
-          <!-- Dark/Light Theme Switch -->
-          <button onclick="toggleTheme()" title="Toggle Theme" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center hover:bg-amber-50 hover:text-amber-500 dark:hover:bg-slate-700 transition-all border border-slate-200/60 dark:border-slate-700">
-            <i data-lucide="moon" id="desktopThemeIcon" class="w-3.5 h-3.5"></i>
-          </button>
-        </div>
-
-        <!-- Navigation Menu -->
-        <nav class="w-full mt-6 space-y-1" id="navLinks">
-          <a href="#home" class="nav-item flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all bg-slate-200/80 dark:bg-slate-800 text-slate-900 dark:text-white">
-            <i data-lucide="layout-grid" class="w-4 h-4 text-orange-500"></i>
-            <span>Home (Bento)</span>
-          </a>
-          <a href="#projects-section" class="nav-item flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-all">
-            <i data-lucide="folder-kanban" class="w-4 h-4 text-sky-500"></i>
-            <span>Projects Gallery</span>
-          </a>
-          <a href="#services-section" class="nav-item flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-all">
-            <i data-lucide="calculator" class="w-4 h-4 text-amber-500"></i>
-            <span>Services & Pricing</span>
-          </a>
-          <a href="#showcase-section" class="nav-item flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-all">
-            <i data-lucide="smartphone" class="w-4 h-4 text-indigo-500"></i>
+          <!-- Sidebar Footer -->
+          <div class="pt-4 border-t border-slate-200 dark:border-slate-700 w-full flex items-center justify-between text-xs text-slate-400">
             <span class="flex items-center gap-1.5">
-              Showcase Lab
-              <span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400">3D</span>
+              <span class="w-6 h-6 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 flex items-center justify-center text-[10px] font-bold">i</span>
+              <span>© 2026</span>
             </span>
-          </a>
-          <a href="#about-section" class="nav-item flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-all">
-            <i data-lucide="user" class="w-4 h-4 text-emerald-500"></i>
-            <span>About & Career</span>
-          </a>
-          <a href="#contact-section" class="nav-item flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-all">
-            <i data-lucide="message-square-quote" class="w-4 h-4 text-rose-500"></i>
-            <span>Contact & Scheduler</span>
-          </a>
-        </nav>
-      </div>
-
-      <!-- Quick Action / Direct Email -->
-      <div class="pt-4 border-t border-slate-200/70 dark:border-slate-800 space-y-2.5">
-        <button onclick="copyToClipboard('obelidorcassiopeia@gmail.com', 'Email address copied to clipboard!')" class="w-full py-2.5 px-3 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-[11px] font-medium text-slate-700 dark:text-slate-300 flex items-center justify-between hover:border-sky-400 transition-all group">
-          <span class="truncate">obelidorcassiopeia@gmail.com</span>
-          <i data-lucide="copy" class="w-3.5 h-3.5 text-slate-400 group-hover:text-sky-500 shrink-0"></i>
-        </button>
-
-        <div class="flex items-center justify-between text-[10px] text-slate-400 pt-1">
-          <span>Based in San Francisco (PST)</span>
-          <span class="font-mono">© 2026</span>
-        </div>
-      </div>
-    </aside>
-
-    <!-- ==============================================
-         MAIN SCROLLABLE CONTENT BODY
-    =================================================== -->
-    <main class="flex-1 p-4 sm:p-6 md:p-8 lg:p-10 xl:p-12 w-full max-w-[1440px] mx-auto overflow-hidden">
-      
-      <!-- ==============================================
-           1. HERO & BENTO HOME (Mirrors visual layout)
-      =================================================== -->
-      <section id="home" class="mb-14 sm:mb-20 pt-2">
-        
-        <!-- Headline & Action -->
-        <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-5 sm:gap-6">
-          <div class="max-w-3xl">
-            <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-slate-950 dark:text-white leading-[1.1]">
-              Architecting human-centric interfaces for ambitious digital products.
-            </h1>
-            <p class="text-xs sm:text-sm font-semibold tracking-wide uppercase text-slate-500 dark:text-slate-400 mt-3 sm:mt-4">
-              Senior UI/UX & Product Designer — Specializing in Complex SaaS, Spatial Interfaces & Multi-Device Design Systems.
-            </p>
-          </div>
-          <!-- Get In Touch CTA -->
-          <div class="shrink-0 flex items-center gap-3">
-            <button onclick="scrollToSection('contact-section')" class="group inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-slate-950 dark:bg-white text-white dark:text-slate-900 text-xs sm:text-sm font-bold shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-95 transition-all">
-              <span>Get in touch</span>
-              <i data-lucide="arrow-up-right" class="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"></i>
-            </button>
+            <span id="live-sidebar-footname" class="truncate max-w-[120px]">Cassiopeia O.</span>
           </div>
         </div>
+      </aside>
 
-        <!-- DAILY DRIVERS / TOOLS TICKER -->
-        <div class="mt-6 sm:mt-8 bg-white/80 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-2.5 sm:p-3 shadow-bento flex items-center overflow-hidden backdrop-blur-md">
-          <div class="shrink-0 pr-3 sm:pr-4 pl-2 sm:pl-3 py-1 border-r border-slate-200 dark:border-slate-800">
-            <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 block leading-none">Daily Drivers</span>
-            <span class="text-xs font-bold text-slate-800 dark:text-slate-200 leading-tight">Tools I work with</span>
-          </div>
+      <!-- RIGHT MAIN CONTENT (Hero + Bento Grid) -->
+      <div class="flex-1 space-y-6">
 
-          <!-- Ticker items -->
-          <div class="flex-1 overflow-hidden relative">
-            <div class="animate-marquee items-center gap-3 sm:gap-4 text-xs font-semibold text-slate-600 dark:text-slate-300">
-              <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shrink-0">
-                <i data-lucide="figma" class="w-3.5 h-3.5 text-purple-500"></i> Figma Tokens
-              </span>
-              <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shrink-0">
-                <i data-lucide="frame" class="w-3.5 h-3.5 text-blue-500"></i> Framer Motion
-              </span>
-              <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shrink-0">
-                <i data-lucide="terminal" class="w-3.5 h-3.5 text-emerald-500"></i> Cursor & AI SDKs
-              </span>
-              <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shrink-0">
-                <i data-lucide="code-2" class="w-3.5 h-3.5 text-sky-500"></i> Tailwind CSS
-              </span>
-              <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shrink-0">
-                <i data-lucide="box" class="w-3.5 h-3.5 text-pink-500"></i> Spline 3D
-              </span>
-              <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shrink-0">
-                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-500"></i> Hermes AI
-              </span>
-              <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shrink-0">
-                <i data-lucide="layers" class="w-3.5 h-3.5 text-indigo-500"></i> Linear & Jira
-              </span>
-
-              <!-- Duplicate for loop -->
-              <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shrink-0">
-                <i data-lucide="figma" class="w-3.5 h-3.5 text-purple-500"></i> Figma Tokens
-              </span>
-              <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shrink-0">
-                <i data-lucide="frame" class="w-3.5 h-3.5 text-blue-500"></i> Framer Motion
-              </span>
-              <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shrink-0">
-                <i data-lucide="terminal" class="w-3.5 h-3.5 text-emerald-500"></i> Cursor & AI SDKs
-              </span>
+        <!-- TOP HERO SECTION -->
+        <section id="hero" class="backdrop-blur-md bg-white/75 dark:bg-charcoal-800/80 border border-slate-200/80 dark:border-slate-700/80 rounded-3xl p-6 sm:p-8 shadow-bento">
+          <div class="flex flex-col md:flex-row md:items-start justify-between gap-6">
+            <div class="space-y-3 max-w-2xl">
+              <h1 id="live-headline" class="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl tracking-tight text-slate-900 dark:text-white leading-[1.15]">
+                Designing products people love using.
+              </h1>
+              <p id="live-subheadline" class="text-sm sm:text-base text-slate-600 dark:text-slate-300 font-normal">
+                I craft research-backed mobile and web experiences that turn complex workflows into simple, human interactions.
+              </p>
+            </div>
+            <div>
+              <button onclick="openContactModal()" class="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-white font-medium text-sm transition-all shadow-md group shrink-0">
+                <span>Get in touch</span>
+                <i data-lucide="arrow-up-right" class="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"></i>
+              </button>
             </div>
           </div>
-        </div>
 
-        <!-- BENTO HOMEPAGE GRID -->
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-12 gap-4 sm:gap-5 mt-8">
+          <!-- DAILY DRIVERS / TOOLS I WORK WITH -->
+          <div class="mt-8 pt-6 border-t border-slate-200/70 dark:border-slate-700/70">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+              <div class="shrink-0">
+                <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 block">Daily Drivers</span>
+                <span class="text-xs font-semibold text-slate-700 dark:text-slate-300">Tools I work with</span>
+              </div>
+              <div class="flex-1 overflow-x-auto no-scrollbar flex items-center gap-2 py-1">
+                <!-- Tool Pills -->
+                <div class="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-cream-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 text-xs font-medium">
+                  <span class="w-2 h-2 rounded-full bg-rose-500"></span> Figma
+                </div>
+                <div class="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-cream-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 text-xs font-medium">
+                  <span class="w-2 h-2 rounded-full bg-purple-500"></span> FigJam
+                </div>
+                <div class="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-cream-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 text-xs font-medium">
+                  <span class="w-2 h-2 rounded-full bg-amber-500"></span> Miro
+                </div>
+                <div class="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-cream-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 text-xs font-medium">
+                  <span class="w-2 h-2 rounded-full bg-blue-500"></span> VS Code
+                </div>
+                <div class="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-cream-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 text-xs font-medium">
+                  <span class="w-2 h-2 rounded-full bg-cyan-500"></span> Adobe XD
+                </div>
+                <div class="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-cream-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 text-xs font-medium">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Spline 3D
+                </div>
+                <div class="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-cream-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 text-xs font-medium">
+                  <span class="w-2 h-2 rounded-full bg-yellow-500"></span> Google UX Suite
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
 
-          <!-- 1. PROJECTS BENTO BOX (Col-span 5) -->
-          <div onclick="scrollToSection('projects-section')" class="xl:col-span-5 bg-white/80 dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 rounded-3xl p-5 sm:p-6 shadow-bento hover:shadow-bento-hover transition-all flex flex-col justify-between group cursor-pointer">
+        <!-- BENTO MODULAR CARDS GRID -->
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+
+          <!-- CARD 1: PROJECTS WITH 3D PAGE CAROUSEL (Col-span 2 on large) -->
+          <div id="card-projects" class="md:col-span-2 backdrop-blur-md bg-white/75 dark:bg-charcoal-800/80 border border-slate-200/80 dark:border-slate-700/80 rounded-3xl p-6 shadow-bento hover:shadow-bento-hover transition-all flex flex-col justify-between">
             <div>
-              <div class="flex items-center justify-between mb-1">
+              <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center gap-2">
-                  <span class="p-1.5 rounded-lg bg-orange-100 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400">
-                    <i data-lucide="folder-archive" class="w-4 h-4"></i>
-                  </span>
-                  <h2 class="font-bold text-lg text-slate-900 dark:text-white">Projects</h2>
-                </div>
-                <span class="text-[10px] font-mono text-sky-500 bg-sky-50 dark:bg-sky-950 px-2 py-0.5 rounded-full font-bold">12 Case Studies</span>
-              </div>
-              <p class="text-xs text-slate-500 dark:text-slate-400 mb-5">Click to view comprehensive case studies & user research.</p>
-            </div>
-
-            <!-- Visual Mockup Stack inside Bento -->
-            <div class="relative bg-gradient-to-b from-slate-100/90 to-slate-200/60 dark:from-slate-800/60 dark:to-slate-900/60 rounded-2xl p-4 border border-slate-200 dark:border-slate-700/60 overflow-hidden min-h-[220px] flex flex-col items-center justify-center">
-              <!-- Dark Card -->
-              <div class="w-full max-w-[320px] bg-slate-950 text-white rounded-xl p-3.5 shadow-2xl border border-slate-800 transform -rotate-1 group-hover:rotate-0 group-hover:scale-105 transition-all duration-300">
-                <div class="flex items-center justify-between mb-2 pb-2 border-b border-slate-800 text-[10px] text-slate-400">
-                  <span class="font-mono">Nexus AI Terminal</span>
-                  <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                </div>
-                <div class="space-y-1.5">
-                  <div class="h-2 w-3/4 bg-slate-800 rounded"></div>
-                  <div class="h-2 w-1/2 bg-slate-800 rounded"></div>
-                </div>
-                <div class="mt-3 flex items-center gap-2">
-                  <span class="text-[9px] px-2 py-0.5 rounded bg-sky-500/20 text-sky-400 font-medium">Fintech UX</span>
-                  <span class="text-[9px] px-2 py-0.5 rounded bg-slate-800 text-slate-400">Spatial Flow</span>
-                </div>
-              </div>
-
-              <!-- Overlap Card -->
-              <div class="w-full max-w-[300px] bg-white dark:bg-slate-800 rounded-xl p-3.5 shadow-xl border border-slate-200 dark:border-slate-700 -mt-6 transform translate-x-3 group-hover:translate-x-0 group-hover:translate-y-1 transition-all duration-300">
-                <div class="flex items-center justify-between mb-2">
-                  <div class="flex gap-1">
-                    <span class="w-2 h-2 rounded-full bg-rose-400"></span>
-                    <span class="w-2 h-2 rounded-full bg-amber-400"></span>
-                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                  <div class="p-2 rounded-xl bg-orange-100 dark:bg-orange-950/60 text-accent-orange">
+                    <i data-lucide="folder-kanban" class="w-4 h-4"></i>
                   </div>
-                  <span class="text-[9px] text-slate-400 font-medium">Bento Design System</span>
+                  <div>
+                    <h3 class="font-display font-bold text-base text-slate-900 dark:text-white">Featured Project</h3>
+                    <p id="live-project-sub" class="text-xs text-slate-500 dark:text-slate-400">Interactive wireframe to high-fi design showcase.</p>
+                  </div>
                 </div>
-                <p class="text-xs font-bold text-slate-800 dark:text-slate-100">Multi-Device Atomic Kit V3</p>
+
+                <!-- Carousel Slide Indicators & Controls -->
+                <div class="flex items-center gap-1.5">
+                  <button id="carousel-prev" class="w-8 h-8 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-700 transition" aria-label="Previous Slide">
+                    <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                  </button>
+                  <span id="carousel-counter" class="text-xs font-mono font-medium px-1 text-slate-500">1 / 3</span>
+                  <button id="carousel-next" class="w-8 h-8 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-700 transition" aria-label="Next Slide">
+                    <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- 3D CAROUSEL CONTAINER -->
+              <div class="relative w-full h-[280px] sm:h-[310px] rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 text-white overflow-hidden p-6 flex flex-col justify-between shadow-inner perspective-1000">
+                
+                <!-- Background mock vector graphics -->
+                <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-accent-orange/15 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute right-10 top-6 w-48 h-48 bg-blue-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+                <!-- Slide Content dynamically switched -->
+                <div id="project-slide-content" class="relative z-10 transition-all duration-300 transform">
+                  <!-- Injected via JavaScript -->
+                </div>
+
+                <!-- Bottom tags & inspect button -->
+                <div class="relative z-10 pt-4 border-t border-slate-700/60 flex items-center justify-between">
+                  <div id="project-tags" class="flex flex-wrap gap-2 text-[11px]">
+                    <span class="px-2.5 py-1 rounded-md bg-white/10 text-white/90 font-medium">Fintech UI</span>
+                    <span class="px-2.5 py-1 rounded-md bg-white/10 text-white/90 font-medium">e-KYC Flow</span>
+                    <span class="px-2.5 py-1 rounded-md bg-white/10 text-white/90 font-medium">Figma</span>
+                  </div>
+                  <button onclick="previewProjectDetails()" class="text-xs text-accent-orange hover:text-orange-400 font-semibold flex items-center gap-1 group">
+                    <span>Inspect Case Study</span>
+                    <i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"></i>
+                  </button>
+                </div>
               </div>
             </div>
 
-            <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-semibold text-sky-600 dark:text-sky-400">
-              <span>Open filterable project library</span>
-              <i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"></i>
+            <div class="mt-4 pt-3 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+              <span class="flex items-center gap-1.5">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-accent-orange"></i>
+                Focus: Information Architecture & Micro-interactions
+              </span>
+              <span class="font-medium text-slate-700 dark:text-slate-300">Case Study 2026</span>
             </div>
           </div>
 
-          <!-- 2. ABOUT BENTO BOX (Col-span 3) -->
-          <div onclick="scrollToSection('about-section')" class="xl:col-span-3 bg-white/80 dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 rounded-3xl p-5 sm:p-6 shadow-bento hover:shadow-bento-hover transition-all flex flex-col justify-between group cursor-pointer">
+          <!-- CARD 2: ABOUT / POLAROID STACK -->
+          <div id="card-about" class="backdrop-blur-md bg-white/75 dark:bg-charcoal-800/80 border border-slate-200/80 dark:border-slate-700/80 rounded-3xl p-6 shadow-bento hover:shadow-bento-hover transition-all flex flex-col justify-between">
             <div>
-              <div class="flex items-center gap-2 mb-1">
-                <span class="p-1.5 rounded-lg bg-orange-100 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400">
+              <div class="flex items-center gap-2 mb-3">
+                <div class="p-2 rounded-xl bg-blue-100 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400">
                   <i data-lucide="user" class="w-4 h-4"></i>
-                </span>
-                <h2 class="font-bold text-lg text-slate-900 dark:text-white">About</h2>
+                </div>
+                <div>
+                  <h3 class="font-display font-bold text-base text-slate-900 dark:text-white">About Me</h3>
+                  <p class="text-xs text-slate-500 dark:text-slate-400">Background & Philosophy</p>
+                </div>
               </div>
-              <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">Product designer & design technologist.</p>
+
+              <!-- Stacked Polaroid / Cards Illusion -->
+              <div class="relative my-4 h-32 flex items-center justify-center">
+                <div class="absolute w-44 h-24 rounded-2xl bg-slate-200 dark:bg-slate-700 -rotate-6 transform transition-transform hover:-rotate-12 shadow-md"></div>
+                <div class="absolute w-44 h-24 rounded-2xl bg-slate-300 dark:bg-slate-600 rotate-3 transform transition-transform hover:rotate-6 shadow-md"></div>
+                <div class="relative w-48 h-28 rounded-2xl bg-cream-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-3 shadow-lg flex flex-col justify-between">
+                  <div class="flex items-center gap-2">
+                    <div class="w-7 h-7 rounded-full bg-accent-orange/20 text-accent-orange flex items-center justify-center text-xs font-bold">CO</div>
+                    <div class="leading-tight">
+                      <p class="text-xs font-bold text-slate-800 dark:text-white">BSIT Graduate</p>
+                      <p class="text-[10px] text-slate-500">Tech + Human Empathy</p>
+                    </div>
+                  </div>
+                  <div class="flex items-center justify-between text-[10px] text-slate-500 pt-2 border-t border-slate-200/50 dark:border-slate-700/50">
+                    <span>Univ. of Nueva Caceres</span>
+                    <span class="text-emerald-600 font-semibold">2021–2025</span>
+                  </div>
+                </div>
+              </div>
+
+              <p id="live-about-bio" class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                Bridging software systems and user experience. Proficient in transforming ambiguous requirements into clean, validated interactive prototypes and scalable design components.
+              </p>
             </div>
 
-            <!-- Fan-out polaroid card stack -->
-            <div class="relative py-10 flex items-center justify-center card-stack">
-              <div class="stack-1 absolute w-32 sm:w-36 h-40 sm:h-44 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-md p-2.5 flex flex-col justify-between">
-                <div class="w-full h-20 bg-gradient-to-tr from-sky-400/30 to-indigo-400/30 rounded-xl flex items-center justify-center">
-                  <i data-lucide="sparkles" class="w-6 h-6 text-sky-500"></i>
-                </div>
-                <div class="h-2 w-12 bg-slate-200 dark:bg-slate-700 rounded"></div>
-              </div>
-
-              <div class="stack-2 absolute w-32 sm:w-36 h-40 sm:h-44 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-md p-2.5 flex flex-col justify-between">
-                <div class="w-full h-20 bg-gradient-to-tr from-amber-400/30 to-rose-400/30 rounded-xl flex items-center justify-center">
-                  <i data-lucide="palette" class="w-6 h-6 text-amber-500"></i>
-                </div>
-                <div class="h-2 w-16 bg-slate-200 dark:bg-slate-700 rounded"></div>
-              </div>
-
-              <div class="stack-3 relative z-10 w-32 sm:w-36 h-40 sm:h-44 rounded-2xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 shadow-xl p-2.5 flex flex-col justify-between">
-                <div class="w-full h-20 rounded-xl overflow-hidden">
-                  <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80" alt="Cassiopeia" class="w-full h-full object-cover">
-                </div>
-                <div class="space-y-1">
-                  <p class="text-[10px] font-bold text-slate-900 dark:text-white">Cassiopeia Obelidor</p>
-                  <p class="text-[9px] text-slate-400">8+ Years in UX</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="text-xs text-slate-500 dark:text-slate-400 text-center">
-              Specialized in scaling products from Seed to Series C and beyond.
+            <div class="mt-4 pt-3 border-t border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between text-xs">
+              <span class="text-slate-400">Design Approach:</span>
+              <span class="font-semibold text-accent-orange">User-Centered & Systematic</span>
             </div>
           </div>
 
-          <!-- 3. AI BUILDS / SIDE PROJECTS (Col-span 4) -->
-          <div class="xl:col-span-4 bg-white/80 dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 rounded-3xl p-5 sm:p-6 shadow-bento hover:shadow-bento-hover transition-all flex flex-col justify-between">
+          <!-- CARD 3: AI BUILDS & EXPLORATION TAGS -->
+          <div class="backdrop-blur-md bg-white/75 dark:bg-charcoal-800/80 border border-slate-200/80 dark:border-slate-700/80 rounded-3xl p-6 shadow-bento hover:shadow-bento-hover transition-all">
+            <div class="flex items-center gap-2 mb-3">
+              <div class="p-2 rounded-xl bg-purple-100 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400">
+                <i data-lucide="cpu" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <h3 class="font-display font-bold text-base text-slate-900 dark:text-white">Design Labs & Explorations</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Rapid prototypes, AI workflows & tokens</p>
+              </div>
+            </div>
+
+            <!-- Tag Pills Grid -->
+            <div class="flex flex-wrap gap-2 my-4">
+              <div class="px-3 py-1.5 rounded-xl bg-cream-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 text-xs font-medium text-slate-700 dark:text-slate-300 flex items-center gap-1.5 hover:border-accent-orange transition cursor-default">
+                <i data-lucide="layers" class="w-3 h-3 text-accent-orange"></i> Design Systems
+              </div>
+              <div class="px-3 py-1.5 rounded-xl bg-cream-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 text-xs font-medium text-slate-700 dark:text-slate-300 flex items-center gap-1.5 hover:border-purple-500 transition cursor-default">
+                <i data-lucide="sparkles" class="w-3 h-3 text-purple-500"></i> Generative AI UI
+              </div>
+              <div class="px-3 py-1.5 rounded-xl bg-cream-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 text-xs font-medium text-slate-700 dark:text-slate-300 flex items-center gap-1.5 hover:border-blue-500 transition cursor-default">
+                <i data-lucide="sliders" class="w-3 h-3 text-blue-500"></i> Design Tokens
+              </div>
+              <div class="px-3 py-1.5 rounded-xl bg-cream-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 text-xs font-medium text-slate-700 dark:text-slate-300 flex items-center gap-1.5 hover:border-emerald-500 transition cursor-default">
+                <i data-lucide="activity" class="w-3 h-3 text-emerald-500"></i> Micro-Interactions
+              </div>
+              <div class="px-3 py-1.5 rounded-xl bg-cream-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 text-xs font-medium text-slate-700 dark:text-slate-300 flex items-center gap-1.5 hover:border-amber-500 transition cursor-default">
+                <i data-lucide="check-circle" class="w-3 h-3 text-amber-500"></i> WCAG Accessibility
+              </div>
+              <div class="px-3 py-1.5 rounded-xl bg-cream-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 text-xs font-medium text-slate-700 dark:text-slate-300 flex items-center gap-1.5 hover:border-rose-500 transition cursor-default">
+                <i data-lucide="search" class="w-3 h-3 text-rose-500"></i> Heuristic Audits
+              </div>
+            </div>
+
+            <div class="p-3 rounded-2xl bg-purple-50/60 dark:bg-purple-950/20 border border-purple-200/50 dark:border-purple-900/40 text-xs text-purple-900 dark:text-purple-300">
+              <span class="font-semibold block mb-0.5">Automated Asset Export:</span>
+              <span>Leveraging tokens & Figma Variables for frictionless developer handoffs.</span>
+            </div>
+          </div>
+
+          <!-- CARD 4: CREDENTIALS (With Google UX Design Badge) -->
+          <div id="card-credentials" class="backdrop-blur-md bg-white/75 dark:bg-charcoal-800/80 border border-slate-200/80 dark:border-slate-700/80 rounded-3xl p-6 shadow-bento hover:shadow-bento-hover transition-all flex flex-col justify-between">
             <div>
-              <div class="flex items-center gap-2 mb-1">
-                <span class="p-1.5 rounded-lg bg-orange-100 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400">
-                  <i data-lucide="bot" class="w-4 h-4"></i>
-                </span>
-                <h2 class="font-bold text-lg text-slate-900 dark:text-white">AI Builds</h2>
-              </div>
-              <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Experimental agents & spatial UI side products.</p>
-            </div>
-
-            <!-- Chips -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 my-auto">
-              <button onclick="triggerToast('Copilot UI Kit: 45 components for LLM chats')" class="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 hover:border-orange-400 text-xs font-semibold text-slate-800 dark:text-slate-200 transition-all text-left">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
-                <span class="truncate">Copilot UX System</span>
-              </button>
-              <button onclick="triggerToast('FinDesk: AI Financial modeling wireframes')" class="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 hover:border-orange-400 text-xs font-semibold text-slate-800 dark:text-slate-200 transition-all text-left">
-                <span class="w-2 h-2 rounded-full bg-sky-500 shrink-0"></span>
-                <span class="truncate">FinDesk Agent</span>
-              </button>
-              <button onclick="triggerToast('SoundGrid: Generative ambient sound canvas')" class="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 hover:border-orange-400 text-xs font-semibold text-slate-800 dark:text-slate-200 transition-all text-left">
-                <span class="w-2 h-2 rounded-full bg-purple-500 shrink-0"></span>
-                <span class="truncate">SoundGrid UI</span>
-              </button>
-              <button onclick="triggerToast('Synthetix: Synthetic user persona testing')" class="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 hover:border-orange-400 text-xs font-semibold text-slate-800 dark:text-slate-200 transition-all text-left">
-                <span class="w-2 h-2 rounded-full bg-amber-500 shrink-0"></span>
-                <span class="truncate">Synthetix Flow</span>
-              </button>
-            </div>
-
-            <p class="text-[11px] text-slate-400 mt-3 text-center">Interactive code prototypes with zero latency</p>
-          </div>
-
-          <!-- 4. CREDENTIALS BENTO BOX (Col-span 3) -->
-          <div class="xl:col-span-3 bg-white/80 dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 rounded-3xl p-5 sm:p-6 shadow-bento hover:shadow-bento-hover transition-all flex flex-col justify-between items-center text-center group">
-            <div class="w-full text-left">
-              <div class="flex items-center gap-2 mb-1">
-                <span class="p-1.5 rounded-lg bg-orange-100 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400">
+              <div class="flex items-center gap-2 mb-3">
+                <div class="p-2 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400">
                   <i data-lucide="award" class="w-4 h-4"></i>
-                </span>
-                <h2 class="font-bold text-lg text-slate-900 dark:text-white">Credentials</h2>
-              </div>
-              <p class="text-xs text-slate-500 dark:text-slate-400">Certified Nielsen Norman Master UX.</p>
-            </div>
-
-            <!-- Medal Badge Graphic -->
-            <div class="my-4 relative flex flex-col items-center">
-              <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 border-dashed border-sky-300 dark:border-sky-600/50 flex items-center justify-center p-2 group-hover:rotate-12 transition-transform duration-500">
-                <div class="w-full h-full rounded-full bg-gradient-to-tr from-sky-100 to-indigo-100 dark:from-slate-800 dark:to-slate-700 flex flex-col items-center justify-center shadow-inner">
-                  <i data-lucide="shield-check" class="w-7 h-7 sm:w-8 sm:h-8 text-sky-600 dark:text-sky-400"></i>
-                  <span class="text-[8px] font-bold tracking-wider uppercase text-slate-500 dark:text-slate-400 mt-0.5">NN/g Certified</span>
+                </div>
+                <div>
+                  <h3 class="font-display font-bold text-base text-slate-900 dark:text-white">Credentials</h3>
+                  <p class="text-xs text-slate-500 dark:text-slate-400">Verified Professional Certifications</p>
                 </div>
               </div>
-              <div class="w-8 h-4 -mt-1 flex justify-center">
-                <div class="w-2.5 h-3.5 bg-sky-500 rounded-b transform -rotate-12"></div>
-                <div class="w-2.5 h-3.5 bg-sky-600 rounded-b transform rotate-12"></div>
-              </div>
-            </div>
 
-            <div class="w-full">
-              <span class="inline-flex items-center justify-center gap-1.5 w-full py-2 px-3 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-xs font-semibold shadow-md">
-                <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-sky-400 dark:text-sky-600"></i>
-                Master UX License #8492
-              </span>
-            </div>
-          </div>
-
-          <!-- 5. SERVICES BENTO BOX (Col-span 4) -->
-          <div onclick="scrollToSection('services-section')" class="xl:col-span-4 bg-white/80 dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 rounded-3xl p-5 sm:p-6 shadow-bento hover:shadow-bento-hover transition-all flex flex-col justify-between cursor-pointer">
-            <div>
-              <div class="flex items-center justify-between mb-1">
-                <div class="flex items-center gap-2">
-                  <span class="p-1.5 rounded-lg bg-orange-100 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400">
-                    <i data-lucide="layers" class="w-4 h-4"></i>
+              <!-- Certificate Emblem / Badge Container -->
+              <div class="my-3 p-4 rounded-2xl bg-cream-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 flex items-center gap-4 cursor-pointer hover:border-blue-400 transition" onclick="openCertModal('google')">
+                <div class="w-14 h-14 shrink-0 rounded-2xl bg-gradient-to-tr from-blue-600 via-emerald-500 to-amber-500 p-0.5 shadow-md flex items-center justify-center">
+                  <div class="w-full h-full bg-white dark:bg-charcoal-800 rounded-[14px] flex flex-col items-center justify-center p-1">
+                    <span class="text-xs font-black tracking-tighter text-blue-600">Google</span>
+                    <span class="text-[8px] font-bold uppercase text-slate-500">UX Design</span>
+                  </div>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <span class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 mb-1">
+                    <i data-lucide="shield-check" class="w-3 h-3"></i> 8 Courses Completed
                   </span>
-                  <h2 class="font-bold text-lg text-slate-900 dark:text-white">Services</h2>
-                </div>
-                <span class="text-[10px] text-amber-600 dark:text-amber-400 font-bold bg-amber-50 dark:bg-amber-950 px-2 py-0.5 rounded-full">Calculator Inside</span>
-              </div>
-              <p class="text-xs text-slate-500 dark:text-slate-400 mb-3">Modular product design & rapid design sprints.</p>
-            </div>
-
-            <!-- Numbered List -->
-            <div class="space-y-1.5 my-2">
-              <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700/60">
-                <span class="text-xs font-semibold">01. End-to-End Product Design</span>
-                <i data-lucide="arrow-right" class="w-3 h-3 text-slate-400"></i>
-              </div>
-              <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700/60">
-                <span class="text-xs font-semibold">02. Design Systems & Figma Tokens</span>
-                <i data-lucide="arrow-right" class="w-3 h-3 text-slate-400"></i>
-              </div>
-              <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700/60">
-                <span class="text-xs font-semibold">03. Interactive Framer / Code Prototypes</span>
-                <i data-lucide="arrow-right" class="w-3 h-3 text-slate-400"></i>
-              </div>
-              <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700/60">
-                <span class="text-xs font-semibold">04. UX Audits & Conversion Growth</span>
-                <i data-lucide="arrow-right" class="w-3 h-3 text-slate-400"></i>
-              </div>
-            </div>
-
-            <div class="pt-2 text-right text-xs font-semibold text-sky-600 dark:text-sky-400 flex items-center justify-end gap-1">
-              <span>Launch interactive pricing calculator</span>
-              <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
-            </div>
-          </div>
-
-          <!-- 6. TESTIMONIALS BENTO BOX (Col-span 5) -->
-          <div class="xl:col-span-5 bg-white/80 dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 rounded-3xl p-5 sm:p-6 shadow-bento hover:shadow-bento-hover transition-all flex flex-col justify-between">
-            <div>
-              <div class="flex items-center gap-2 mb-1">
-                <span class="p-1.5 rounded-lg bg-orange-100 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400">
-                  <i data-lucide="quote" class="w-4 h-4"></i>
-                </span>
-                <h2 class="font-bold text-lg text-slate-900 dark:text-white">Testimonials</h2>
-              </div>
-              <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Direct feedback from founders & product VPs.</p>
-            </div>
-
-            <!-- Testimonials Items -->
-            <div class="space-y-2.5 my-auto">
-              <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/70 border border-slate-100 dark:border-slate-700/50">
-                <div class="flex items-center justify-between mb-1">
-                  <div class="flex items-center gap-2">
-                    <div class="w-6 h-6 rounded-full bg-sky-500 text-white flex items-center justify-center text-[10px] font-bold">SL</div>
-                    <span class="text-xs font-bold text-slate-900 dark:text-white">Sarah Lin • VP Product at FinNova</span>
-                  </div>
-                  <div class="flex text-amber-400">
-                    <i data-lucide="star" class="w-3 h-3 fill-amber-400"></i>
-                    <i data-lucide="star" class="w-3 h-3 fill-amber-400"></i>
-                    <i data-lucide="star" class="w-3 h-3 fill-amber-400"></i>
-                    <i data-lucide="star" class="w-3 h-3 fill-amber-400"></i>
-                    <i data-lucide="star" class="w-3 h-3 fill-amber-400"></i>
-                  </div>
-                </div>
-                <p class="text-xs text-slate-600 dark:text-slate-300">"Cassiopeia simplified our complex institutional trading flow into a clean 3-click transaction pipeline. User drop-off fell 42%."</p>
-              </div>
-
-              <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/70 border border-slate-100 dark:border-slate-700/50">
-                <div class="flex items-center justify-between mb-1">
-                  <div class="flex items-center gap-2">
-                    <div class="w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[10px] font-bold">DK</div>
-                    <span class="text-xs font-bold text-slate-900 dark:text-white">David Kim • Founder at OmniBio</span>
-                  </div>
-                  <div class="flex text-amber-400">
-                    <i data-lucide="star" class="w-3 h-3 fill-amber-400"></i>
-                    <i data-lucide="star" class="w-3 h-3 fill-amber-400"></i>
-                    <i data-lucide="star" class="w-3 h-3 fill-amber-400"></i>
-                    <i data-lucide="star" class="w-3 h-3 fill-amber-400"></i>
-                    <i data-lucide="star" class="w-3 h-3 fill-amber-400"></i>
-                  </div>
-                </div>
-                <p class="text-xs text-slate-600 dark:text-slate-300">"The fastest designer who truly codes. Handoff to our frontend engineering team was 100% frictionless."</p>
-              </div>
-            </div>
-
-            <div class="mt-3 pt-2 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center text-xs text-slate-400">
-              <span>98% On-Time Delivery Rate</span>
-              <span class="text-emerald-500 font-bold">5.0 Star Rating</span>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      <!-- ==============================================
-           2. DEDICATED FEATURE: PROJECTS GALLERY & CASE STUDIES
-      =================================================== -->
-      <section id="projects-section" class="mb-14 sm:mb-20 scroll-mt-6">
-        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
-          <div>
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-50 dark:bg-sky-950/60 border border-sky-200 dark:border-sky-800 text-sky-600 dark:text-sky-400 text-xs font-bold uppercase tracking-wider mb-2">
-              <i data-lucide="folder-check" class="w-3.5 h-3.5"></i>
-              Curated Portfolio
-            </div>
-            <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-950 dark:text-white">
-              Selected Case Studies & Work
-            </h2>
-            <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Deep dives into user research, wireframes, interaction design, and quantified business impact.</p>
-          </div>
-
-          <!-- Category Filter Pills -->
-          <div class="flex items-center gap-1.5 flex-wrap" id="projectFilterGroup">
-            <button onclick="filterProjects('all')" class="filter-btn active px-3.5 py-1.5 rounded-full text-xs font-bold bg-slate-900 text-white dark:bg-white dark:text-slate-900 transition-all">All Work</button>
-            <button onclick="filterProjects('fintech')" class="filter-btn px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-sky-400 transition-all">Fintech</button>
-            <button onclick="filterProjects('mobile')" class="filter-btn px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-sky-400 transition-all">Mobile Apps</button>
-            <button onclick="filterProjects('design-system')" class="filter-btn px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-sky-400 transition-all">Design Systems</button>
-            <button onclick="filterProjects('saas')" class="filter-btn px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-sky-400 transition-all">SaaS & AI</button>
-          </div>
-        </div>
-
-        <!-- Project Grid Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="projectsGrid">
-          
-          <!-- Card 1 -->
-          <div data-category="fintech" class="project-card group bg-white/80 dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 rounded-3xl overflow-hidden shadow-bento hover:shadow-bento-hover transition-all flex flex-col justify-between cursor-pointer" onclick="openCaseStudyModal(0)">
-            <div>
-              <div class="relative h-52 bg-slate-900 overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=700&q=80" alt="Fintech Project" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80">
-                <div class="absolute top-3 left-3 bg-slate-900/80 backdrop-blur-md px-2.5 py-1 rounded-full text-[10px] font-mono text-sky-400 border border-slate-700">
-                  Fintech & Trading
-                </div>
-                <div class="absolute top-3 right-3 bg-emerald-500/90 text-white px-2 py-0.5 rounded-md text-[10px] font-bold">
-                  +38% Conversion
-                </div>
-              </div>
-              <div class="p-5">
-                <h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-sky-500 transition-colors">Aura Wealth OS</h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 line-clamp-2">Complete re-architecture of an institutional portfolio rebalancing tool for high-net-worth investors.</p>
-                <div class="flex flex-wrap gap-1.5 mt-4">
-                  <span class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Figma Tokens</span>
-                  <span class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Heuristic Audit</span>
-                  <span class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">ProtoPie</span>
-                </div>
-              </div>
-            </div>
-            <div class="px-5 pb-5 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-sky-600 dark:text-sky-400">
-              <span>View Full Case Study</span>
-              <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
-            </div>
-          </div>
-
-          <!-- Card 2 -->
-          <div data-category="mobile" class="project-card group bg-white/80 dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 rounded-3xl overflow-hidden shadow-bento hover:shadow-bento-hover transition-all flex flex-col justify-between cursor-pointer" onclick="openCaseStudyModal(1)">
-            <div>
-              <div class="relative h-52 bg-slate-900 overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?auto=format&fit=crop&w=700&q=80" alt="Biotech App" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80">
-                <div class="absolute top-3 left-3 bg-slate-900/80 backdrop-blur-md px-2.5 py-1 rounded-full text-[10px] font-mono text-indigo-400 border border-slate-700">
-                  Mobile App & iOS
-                </div>
-                <div class="absolute top-3 right-3 bg-sky-500/90 text-white px-2 py-0.5 rounded-md text-[10px] font-bold">
-                  App Store #1
-                </div>
-              </div>
-              <div class="p-5">
-                <h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-sky-500 transition-colors">PulseGen Biometrics iOS</h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 line-clamp-2">Spatial and wearable telemetry health app delivering real-time biometric analysis for elite marathoners.</p>
-                <div class="flex flex-wrap gap-1.5 mt-4">
-                  <span class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">iOS HIG</span>
-                  <span class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Haptics</span>
-                  <span class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">watchOS</span>
-                </div>
-              </div>
-            </div>
-            <div class="px-5 pb-5 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-sky-600 dark:text-sky-400">
-              <span>View Full Case Study</span>
-              <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
-            </div>
-          </div>
-
-          <!-- Card 3 -->
-          <div data-category="design-system" class="project-card group bg-white/80 dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 rounded-3xl overflow-hidden shadow-bento hover:shadow-bento-hover transition-all flex flex-col justify-between cursor-pointer" onclick="openCaseStudyModal(2)">
-            <div>
-              <div class="relative h-52 bg-slate-900 overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=700&q=80" alt="Design System" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80">
-                <div class="absolute top-3 left-3 bg-slate-900/80 backdrop-blur-md px-2.5 py-1 rounded-full text-[10px] font-mono text-purple-400 border border-slate-700">
-                  Design System
-                </div>
-                <div class="absolute top-3 right-3 bg-purple-500/90 text-white px-2 py-0.5 rounded-md text-[10px] font-bold">
-                  240+ Tokens
-                </div>
-              </div>
-              <div class="p-5">
-                <h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-sky-500 transition-colors">Prism Design System 3.0</h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 line-clamp-2">Unified multi-brand design tokens bridging Figma variables directly into React/Tailwind codebases.</p>
-                <div class="flex flex-wrap gap-1.5 mt-4">
-                  <span class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Design Tokens</span>
-                  <span class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Tailwind</span>
-                  <span class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">WCAG AAA</span>
-                </div>
-              </div>
-            </div>
-            <div class="px-5 pb-5 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-sky-600 dark:text-sky-400">
-              <span>View Full Case Study</span>
-              <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
-            </div>
-          </div>
-
-          <!-- Card 4 -->
-          <div data-category="saas" class="project-card group bg-white/80 dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 rounded-3xl overflow-hidden shadow-bento hover:shadow-bento-hover transition-all flex flex-col justify-between cursor-pointer" onclick="openCaseStudyModal(3)">
-            <div>
-              <div class="relative h-52 bg-slate-900 overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=700&q=80" alt="SaaS Analytics" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80">
-                <div class="absolute top-3 left-3 bg-slate-900/80 backdrop-blur-md px-2.5 py-1 rounded-full text-[10px] font-mono text-amber-400 border border-slate-700">
-                  SaaS & AI
-                </div>
-                <div class="absolute top-3 right-3 bg-amber-500/90 text-white px-2 py-0.5 rounded-md text-[10px] font-bold">
-                  $14M Series A
-                </div>
-              </div>
-              <div class="p-5">
-                <h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-sky-500 transition-colors">OmniFlow Studio</h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 line-clamp-2">Infinite canvas platform enabling enterprise growth teams to deploy AI agent pipelines with zero code.</p>
-                <div class="flex flex-wrap gap-1.5 mt-4">
-                  <span class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Canvas UX</span>
-                  <span class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Information Arch</span>
-                  <span class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Framer</span>
-                </div>
-              </div>
-            </div>
-            <div class="px-5 pb-5 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-sky-600 dark:text-sky-400">
-              <span>View Full Case Study</span>
-              <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
-            </div>
-          </div>
-
-          <!-- Card 5 -->
-          <div data-category="fintech" class="project-card group bg-white/80 dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 rounded-3xl overflow-hidden shadow-bento hover:shadow-bento-hover transition-all flex flex-col justify-between cursor-pointer" onclick="openCaseStudyModal(0)">
-            <div>
-              <div class="relative h-52 bg-slate-900 overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&w=700&q=80" alt="Web3 Security" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80">
-                <div class="absolute top-3 left-3 bg-slate-900/80 backdrop-blur-md px-2.5 py-1 rounded-full text-[10px] font-mono text-emerald-400 border border-slate-700">
-                  Fintech & Web3
-                </div>
-                <div class="absolute top-3 right-3 bg-emerald-500/90 text-white px-2 py-0.5 rounded-md text-[10px] font-bold">
-                  Zero Exploits
-                </div>
-              </div>
-              <div class="p-5">
-                <h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-sky-500 transition-colors">VaultX Protocol Keyless Auth</h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 line-clamp-2">Eliminating seed-phrase friction with biometric passkey multi-party computation security.</p>
-                <div class="flex flex-wrap gap-1.5 mt-4">
-                  <span class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Biometric UX</span>
-                  <span class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Security Flow</span>
-                </div>
-              </div>
-            </div>
-            <div class="px-5 pb-5 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-sky-600 dark:text-sky-400">
-              <span>View Full Case Study</span>
-              <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
-            </div>
-          </div>
-
-          <!-- Card 6 -->
-          <div data-category="mobile" class="project-card group bg-white/80 dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 rounded-3xl overflow-hidden shadow-bento hover:shadow-bento-hover transition-all flex flex-col justify-between cursor-pointer" onclick="openCaseStudyModal(1)">
-            <div>
-              <div class="relative h-52 bg-slate-900 overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1555774698-0b77e0d5fac6?auto=format&fit=crop&w=700&q=80" alt="E-Commerce 3D" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80">
-                <div class="absolute top-3 left-3 bg-slate-900/80 backdrop-blur-md px-2.5 py-1 rounded-full text-[10px] font-mono text-pink-400 border border-slate-700">
-                  Mobile & 3D Web
-                </div>
-                <div class="absolute top-3 right-3 bg-pink-500/90 text-white px-2 py-0.5 rounded-md text-[10px] font-bold">
-                  2.4x Engaged Time
-                </div>
-              </div>
-              <div class="p-5">
-                <h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-sky-500 transition-colors">Nordic Spatial E-Commerce</h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 line-clamp-2">Interactive 3D configurator letting buyers visualize architectural furniture in AR before purchasing.</p>
-                <div class="flex flex-wrap gap-1.5 mt-4">
-                  <span class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Three.js</span>
-                  <span class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">WebXR</span>
-                </div>
-              </div>
-            </div>
-            <div class="px-5 pb-5 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-sky-600 dark:text-sky-400">
-              <span>View Full Case Study</span>
-              <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      <!-- ==============================================
-           3. DEDICATED FEATURE: SERVICES & PRICING CALCULATOR
-      =================================================== -->
-      <section id="services-section" class="mb-14 sm:mb-20 scroll-mt-6">
-        <div class="bg-white/80 dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 rounded-3xl p-6 sm:p-8 md:p-10 shadow-bento backdrop-blur-md">
-          
-          <div class="max-w-2xl mb-8">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 text-amber-600 dark:text-amber-400 text-xs font-bold uppercase tracking-wider mb-2">
-              <i data-lucide="calculator" class="w-3.5 h-3.5"></i>
-              Transparent Engagement
-            </div>
-            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-950 dark:text-white">
-              Services Catalog & Instant Scope Estimator
-            </h2>
-            <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Configure your product requirements below to calculate real-time ballpark estimates and timelines.</p>
-          </div>
-
-          <!-- Calculator Grid -->
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            
-            <!-- Left Controls (8 cols) -->
-            <div class="lg:col-span-7 space-y-6">
-              
-              <!-- Service Selection -->
-              <div>
-                <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2.5">
-                  1. Select Core Service Capabilities
-                </label>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                  <label class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 cursor-pointer hover:border-sky-400 transition-all">
-                    <span class="flex items-center gap-2.5 text-xs font-semibold">
-                      <input type="checkbox" id="srv-ui" checked onchange="calculateScope()" class="rounded text-sky-500 focus:ring-sky-500 w-4 h-4">
-                      UI/UX Product Design
-                    </span>
-                    <span class="text-[11px] font-mono text-slate-400">+$3,800</span>
-                  </label>
-
-                  <label class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 cursor-pointer hover:border-sky-400 transition-all">
-                    <span class="flex items-center gap-2.5 text-xs font-semibold">
-                      <input type="checkbox" id="srv-tokens" checked onchange="calculateScope()" class="rounded text-sky-500 focus:ring-sky-500 w-4 h-4">
-                      Design System & Tokens
-                    </span>
-                    <span class="text-[11px] font-mono text-slate-400">+$2,400</span>
-                  </label>
-
-                  <label class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 cursor-pointer hover:border-sky-400 transition-all">
-                    <span class="flex items-center gap-2.5 text-xs font-semibold">
-                      <input type="checkbox" id="srv-proto" onchange="calculateScope()" class="rounded text-sky-500 focus:ring-sky-500 w-4 h-4">
-                      High-Fidelity Code Prototype
-                    </span>
-                    <span class="text-[11px] font-mono text-slate-400">+$2,200</span>
-                  </label>
-
-                  <label class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 cursor-pointer hover:border-sky-400 transition-all">
-                    <span class="flex items-center gap-2.5 text-xs font-semibold">
-                      <input type="checkbox" id="srv-research" onchange="calculateScope()" class="rounded text-sky-500 focus:ring-sky-500 w-4 h-4">
-                      Usability Testing & Audit
-                    </span>
-                    <span class="text-[11px] font-mono text-slate-400">+$1,500</span>
-                  </label>
-                </div>
-              </div>
-
-              <!-- Sliders: Screen Count & Timeline -->
-              <div class="space-y-4 pt-2">
-                <div>
-                  <div class="flex justify-between items-center text-xs font-bold mb-1.5">
-                    <span>Estimated Screen Count</span>
-                    <span class="text-sky-500 font-mono text-sm" id="screenCountDisplay">8 Screens</span>
-                  </div>
-                  <input type="range" id="screenRange" min="3" max="35" value="8" oninput="calculateScope()" class="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg cursor-pointer">
-                  <div class="flex justify-between text-[10px] text-slate-400 mt-1">
-                    <span>3 Screens (MVP)</span>
-                    <span>15 Screens</span>
-                    <span>35+ (Full Platform)</span>
-                  </div>
-                </div>
-
-                <div>
-                  <div class="flex justify-between items-center text-xs font-bold mb-1.5">
-                    <span>Turnaround Urgency</span>
-                    <span class="text-amber-500 font-mono text-xs" id="urgencyDisplay">Standard (3-4 Weeks)</span>
-                  </div>
-                  <select id="urgencySelect" onchange="calculateScope()" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold focus:outline-none">
-                    <option value="1">Standard Delivery (3-4 Weeks) — 1.0x</option>
-                    <option value="1.25">Expedited Sprint (2 Weeks) — 1.25x</option>
-                    <option value="1.5">Emergency Blitz (7 Days) — 1.5x</option>
-                  </select>
-                </div>
-              </div>
-
-              <!-- 5-Step Process Timeline -->
-              <div class="pt-4 border-t border-slate-200/80 dark:border-slate-800">
-                <span class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">
-                  Design Sprint Milestones
-                </span>
-                <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 text-center">
-                  <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/70 dark:border-slate-700/60">
-                    <div class="text-[10px] font-mono text-sky-500 font-bold">01</div>
-                    <div class="text-xs font-bold mt-0.5">Discovery</div>
-                    <div class="text-[9px] text-slate-400">User interviews</div>
-                  </div>
-                  <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/70 dark:border-slate-700/60">
-                    <div class="text-[10px] font-mono text-sky-500 font-bold">02</div>
-                    <div class="text-xs font-bold mt-0.5">Wireframe</div>
-                    <div class="text-[9px] text-slate-400">Flow mapping</div>
-                  </div>
-                  <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/70 dark:border-slate-700/60">
-                    <div class="text-[10px] font-mono text-sky-500 font-bold">03</div>
-                    <div class="text-xs font-bold mt-0.5">UI Design</div>
-                    <div class="text-[9px] text-slate-400">Tokenized specs</div>
-                  </div>
-                  <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/70 dark:border-slate-700/60">
-                    <div class="text-[10px] font-mono text-sky-500 font-bold">04</div>
-                    <div class="text-xs font-bold mt-0.5">Prototype</div>
-                    <div class="text-[9px] text-slate-400">Micro-animations</div>
-                  </div>
-                  <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/70 dark:border-slate-700/60">
-                    <div class="text-[10px] font-mono text-sky-500 font-bold">05</div>
-                    <div class="text-xs font-bold mt-0.5">Handoff</div>
-                    <div class="text-[9px] text-slate-400">Dev sync & QA</div>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
-            <!-- Right Estimated Quote Card (5 cols) -->
-            <div class="lg:col-span-5 bg-gradient-to-br from-slate-900 via-slate-950 to-indigo-950 text-white p-6 sm:p-7 rounded-3xl border border-slate-800 shadow-2xl flex flex-col justify-between">
-              <div>
-                <div class="flex items-center justify-between pb-3 border-b border-slate-800 text-xs text-slate-400 font-mono">
-                  <span>ESTIMATE BREAKDOWN</span>
-                  <span class="inline-flex items-center gap-1 text-emerald-400">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                    Live Calculation
-                  </span>
-                </div>
-
-                <div class="my-6">
-                  <span class="text-xs text-indigo-300 font-medium">Estimated Investment</span>
-                  <div class="text-3xl sm:text-4xl font-black tracking-tight text-white mt-1 font-mono" id="totalEstimatePrice">
-                    $6,200 - $7,800
-                  </div>
-                  <p class="text-xs text-slate-400 mt-2" id="timelineEst">Estimated duration: ~3.5 weeks from kickoff</p>
-                </div>
-
-                <div class="space-y-2 pt-2 border-t border-slate-800/80 text-xs text-slate-300">
-                  <div class="flex justify-between">
-                    <span class="text-slate-400">Deliverables</span>
-                    <span id="summaryDeliverables">UI Kit, Figma Tokens, Specs</span>
-                  </div>
-                  <div class="flex justify-between">
-                    <span class="text-slate-400">Revisions Included</span>
-                    <span>Unlimited during sprint</span>
-                  </div>
-                  <div class="flex justify-between">
-                    <span class="text-slate-400">Dev Handoff Sync</span>
-                    <span>Included (Weekly Slack/Call)</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="pt-6 mt-6 border-t border-slate-800">
-                <button onclick="bookWithEstimate()" class="w-full py-3.5 rounded-2xl bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs sm:text-sm shadow-lg hover:shadow-sky-500/25 active:scale-95 transition-all flex items-center justify-center gap-2">
-                  <span>Book Discovery Call with this Scope</span>
-                  <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                </button>
-                <div class="text-[10px] text-slate-400 text-center mt-2.5">
-                  No payment required today. Ballpark estimate for scoping purposes.
+                  <h4 class="text-xs font-bold text-slate-900 dark:text-white truncate">Google UX Design Professional</h4>
+                  <p class="text-[11px] text-slate-500">Issued Oct 15, 2026 · Coursera</p>
                 </div>
               </div>
             </div>
 
-          </div>
-
-        </div>
-      </section>
-
-      <!-- ==============================================
-           4. DEDICATED FEATURE: SHOWCASE LAB & 3D / MULTI-DEVICE
-      =================================================== -->
-      <section id="showcase-section" class="mb-14 sm:mb-20 scroll-mt-6">
-        
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-          <div>
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400 text-xs font-bold uppercase tracking-wider mb-2">
-              <i data-lucide="layers-3" class="w-3.5 h-3.5"></i>
-              Interactive Showcase Lab
-            </div>
-            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-950 dark:text-white">
-              Multi-Device Interaction & 3D Coverflow
-            </h2>
-          </div>
-
-          <!-- Multi-Device Viewport Switcher -->
-          <div class="bg-white/80 dark:bg-slate-900/80 p-1 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center flex-wrap gap-1 shadow-sm">
-            <button id="btn-device-carousel" onclick="selectDeviceView('carousel')" class="device-tab active flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-sky-500 text-white transition-all">
-              <i data-lucide="layers-3" class="w-3.5 h-3.5"></i>
-              <span>3D Carousel</span>
-            </button>
-            <button id="btn-device-phone" onclick="selectDeviceView('phone')" class="device-tab flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all">
-              <i data-lucide="smartphone" class="w-3.5 h-3.5"></i>
-              <span>iPhone</span>
-            </button>
-            <button id="btn-device-tablet" onclick="selectDeviceView('tablet')" class="device-tab flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all">
-              <i data-lucide="tablet" class="w-3.5 h-3.5"></i>
-              <span>iPad Tablet</span>
-            </button>
-            <button id="btn-device-watch" onclick="selectDeviceView('watch')" class="device-tab flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all">
-              <i data-lucide="watch" class="w-3.5 h-3.5"></i>
-              <span>Smartwatch</span>
+            <button onclick="openCertModal('google')" class="mt-4 w-full py-2 px-3 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-medium text-xs flex items-center justify-center gap-1.5 shadow-xs transition hover:opacity-90">
+              <i data-lucide="check-circle" class="w-3.5 h-3.5 text-blue-400 dark:text-blue-600"></i>
+              Verify Credentials Online
             </button>
           </div>
-        </div>
 
-        <!-- SHOWCASE CONTAINER -->
-        <div class="relative bg-white/70 dark:bg-slate-900/70 border border-slate-200/90 dark:border-slate-800 rounded-3xl p-4 sm:p-8 md:p-10 shadow-bento overflow-hidden backdrop-blur-md min-h-[520px] flex items-center justify-center">
-
-          <!-- VIEW A: 3D COVERFLOW PAGE CAROUSEL -->
-          <div id="view-carousel" class="w-full">
-            <div class="text-center max-w-lg mx-auto mb-6">
-              <p class="text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">Swipe, Drag or Use Arrow Keys</p>
-              <h3 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mt-1">Spatial 3D Page Deck Rotator</h3>
-            </div>
-
-            <!-- Stage -->
-            <div id="carouselTouchArea" class="carousel-stage relative h-80 sm:h-96 w-full flex items-center justify-center overflow-visible">
-              
-              <!-- Card 0 -->
-              <div class="carousel-item absolute w-[260px] sm:w-[320px] h-[320px] sm:h-[360px] bg-slate-900 text-white rounded-3xl p-5 border border-slate-700 shadow-2xl flex flex-col justify-between cursor-pointer" onclick="setCarouselIndex(0)">
+          <!-- CARD 5: SERVICES (Numbered List 01-05) -->
+          <div id="card-services" class="backdrop-blur-md bg-white/75 dark:bg-charcoal-800/80 border border-slate-200/80 dark:border-slate-700/80 rounded-3xl p-6 shadow-bento hover:shadow-bento-hover transition-all flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-2 mb-3">
+                <div class="p-2 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400">
+                  <i data-lucide="layers" class="w-4 h-4"></i>
+                </div>
                 <div>
-                  <div class="flex items-center justify-between pb-3 border-b border-slate-800">
-                    <span class="text-xs font-mono text-sky-400">01 / FINTECH</span>
-                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-semibold">Live Beta</span>
-                  </div>
-                  <h4 class="text-base sm:text-lg font-bold mt-3">Aura Wealth OS</h4>
-                  <p class="text-xs text-slate-400 mt-1">Autonomous multi-asset algorithmic portfolio management UI.</p>
-                </div>
-                <div class="bg-slate-800/80 rounded-2xl p-3 border border-slate-700/60">
-                  <div class="flex justify-between text-[11px] mb-1">
-                    <span class="text-slate-400">Portfolio Return</span>
-                    <span class="text-emerald-400 font-bold font-mono">+28.4%</span>
-                  </div>
-                  <div class="h-1.5 w-full bg-slate-700 rounded-full overflow-hidden">
-                    <div class="h-full bg-sky-500 w-4/5"></div>
-                  </div>
-                </div>
-                <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-slate-800">
-                  <span>Click to view details</span>
-                  <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-sky-400"></i>
+                  <h3 class="font-display font-bold text-base text-slate-900 dark:text-white">Services</h3>
+                  <p class="text-xs text-slate-500 dark:text-slate-400">Design lifecycle capabilities</p>
                 </div>
               </div>
 
-              <!-- Card 1 -->
-              <div class="carousel-item absolute w-[260px] sm:w-[320px] h-[320px] sm:h-[360px] bg-gradient-to-br from-indigo-950 via-slate-900 to-indigo-900 text-white rounded-3xl p-5 border border-indigo-700/50 shadow-2xl flex flex-col justify-between cursor-pointer" onclick="setCarouselIndex(1)">
-                <div>
-                  <div class="flex items-center justify-between pb-3 border-b border-indigo-800/60">
-                    <span class="text-xs font-mono text-indigo-300">02 / BIOTECH</span>
-                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/30 text-indigo-200 font-semibold">iOS 18</span>
-                  </div>
-                  <h4 class="text-base sm:text-lg font-bold mt-3">PulseGen Spatial</h4>
-                  <p class="text-xs text-indigo-200/70 mt-1">Real-time biomechanics telemetry for high-performance athletes.</p>
-                </div>
-                <div class="bg-indigo-950/70 rounded-2xl p-3 border border-indigo-800/40">
+              <div class="space-y-2 mt-4" id="services-list-container">
+                <!-- Service Items -->
+                <div class="flex items-center justify-between p-2.5 rounded-xl hover:bg-cream-50 dark:hover:bg-slate-700/40 transition group cursor-default">
                   <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-lg bg-indigo-500/30 flex items-center justify-center">
-                      <i data-lucide="activity" class="w-4 h-4 text-indigo-400"></i>
-                    </div>
-                    <div>
-                      <div class="text-[10px] text-indigo-300">Biometric Sync</div>
-                      <div class="text-xs font-bold text-white">99.4% Latency Free</div>
-                    </div>
+                    <span class="text-[11px] font-mono font-bold text-accent-orange">01</span>
+                    <span class="text-xs font-medium text-slate-800 dark:text-slate-200 group-hover:translate-x-1 transition-transform">User Research & Personas</span>
                   </div>
+                  <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-400 group-hover:text-accent-orange transition"></i>
                 </div>
-                <div class="flex items-center justify-between text-xs text-indigo-200/60 pt-2 border-t border-indigo-800/60">
-                  <span>Click to view details</span>
-                  <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-indigo-300"></i>
+
+                <div class="flex items-center justify-between p-2.5 rounded-xl hover:bg-cream-50 dark:hover:bg-slate-700/40 transition group cursor-default">
+                  <div class="flex items-center gap-3">
+                    <span class="text-[11px] font-mono font-bold text-accent-orange">02</span>
+                    <span class="text-xs font-medium text-slate-800 dark:text-slate-200 group-hover:translate-x-1 transition-transform">Information Architecture & Sitemaps</span>
+                  </div>
+                  <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-400 group-hover:text-accent-orange transition"></i>
+                </div>
+
+                <div class="flex items-center justify-between p-2.5 rounded-xl hover:bg-cream-50 dark:hover:bg-slate-700/40 transition group cursor-default">
+                  <div class="flex items-center gap-3">
+                    <span class="text-[11px] font-mono font-bold text-accent-orange">03</span>
+                    <span class="text-xs font-medium text-slate-800 dark:text-slate-200 group-hover:translate-x-1 transition-transform">Wireframing & Interactive Prototyping</span>
+                  </div>
+                  <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-400 group-hover:text-accent-orange transition"></i>
+                </div>
+
+                <div class="flex items-center justify-between p-2.5 rounded-xl hover:bg-cream-50 dark:hover:bg-slate-700/40 transition group cursor-default">
+                  <div class="flex items-center gap-3">
+                    <span class="text-[11px] font-mono font-bold text-accent-orange">04</span>
+                    <span class="text-xs font-medium text-slate-800 dark:text-slate-200 group-hover:translate-x-1 transition-transform">Design Systems & UI Kits</span>
+                  </div>
+                  <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-400 group-hover:text-accent-orange transition"></i>
+                </div>
+
+                <div class="flex items-center justify-between p-2.5 rounded-xl hover:bg-cream-50 dark:hover:bg-slate-700/40 transition group cursor-default">
+                  <div class="flex items-center gap-3">
+                    <span class="text-[11px] font-mono font-bold text-accent-orange">05</span>
+                    <span class="text-xs font-medium text-slate-800 dark:text-slate-200 group-hover:translate-x-1 transition-transform">Usability Testing & Iteration</span>
+                  </div>
+                  <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-400 group-hover:text-accent-orange transition"></i>
                 </div>
               </div>
-
-              <!-- Card 2 -->
-              <div class="carousel-item absolute w-[260px] sm:w-[320px] h-[320px] sm:h-[360px] bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-3xl p-5 border border-slate-300 dark:border-slate-700 shadow-2xl flex flex-col justify-between cursor-pointer" onclick="setCarouselIndex(2)">
-                <div>
-                  <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-700">
-                    <span class="text-xs font-mono text-purple-600 dark:text-purple-400">03 / DESIGN SYSTEM</span>
-                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-900/60 text-purple-700 dark:text-purple-300 font-semibold">v3.4</span>
-                  </div>
-                  <h4 class="text-base sm:text-lg font-bold mt-3">Prism Token Engine</h4>
-                  <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Atomic UI primitive tokens powering 40+ engineering repositories.</p>
-                </div>
-                <div class="bg-slate-100 dark:bg-slate-700/60 rounded-2xl p-3 border border-slate-200 dark:border-slate-600">
-                  <div class="flex justify-between items-center text-xs">
-                    <span class="font-bold">240 Tokens Sync</span>
-                    <span class="text-emerald-500 font-bold font-mono">100% WCAG</span>
-                  </div>
-                </div>
-                <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-slate-200 dark:border-slate-700">
-                  <span>Click to view details</span>
-                  <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-purple-500"></i>
-                </div>
-              </div>
-
-              <!-- Card 3 -->
-              <div class="carousel-item absolute w-[260px] sm:w-[320px] h-[320px] sm:h-[360px] bg-slate-950 text-white rounded-3xl p-5 border border-amber-800/40 shadow-2xl flex flex-col justify-between cursor-pointer" onclick="setCarouselIndex(3)">
-                <div>
-                  <div class="flex items-center justify-between pb-3 border-b border-amber-900/50">
-                    <span class="text-xs font-mono text-amber-400">04 / WORKFLOW</span>
-                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-semibold">Featured</span>
-                  </div>
-                  <h4 class="text-base sm:text-lg font-bold mt-3">OmniFlow Canvas</h4>
-                  <p class="text-xs text-amber-200/70 mt-1">Node-based visual AI pipeline architecture for generative apps.</p>
-                </div>
-                <div class="bg-amber-950/60 rounded-2xl p-3 border border-amber-800/40">
-                  <div class="text-[11px] text-amber-200">12,000+ Enterprise Active</div>
-                  <div class="h-1.5 w-full bg-amber-900/50 rounded-full mt-1.5 overflow-hidden">
-                    <div class="h-full bg-amber-400 w-4/5"></div>
-                  </div>
-                </div>
-                <div class="flex items-center justify-between text-xs text-amber-300/80 pt-2 border-t border-amber-900/50">
-                  <span>Click to view details</span>
-                  <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-amber-400"></i>
-                </div>
-              </div>
-
-              <!-- Card 4 -->
-              <div class="carousel-item absolute w-[260px] sm:w-[320px] h-[320px] sm:h-[360px] bg-slate-950 text-white rounded-3xl p-5 border border-emerald-700/50 shadow-2xl flex flex-col justify-between cursor-pointer" onclick="setCarouselIndex(4)">
-                <div>
-                  <div class="flex items-center justify-between pb-3 border-b border-slate-800">
-                    <span class="text-xs font-mono text-emerald-400">05 / FINTECH</span>
-                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold">Audited</span>
-                  </div>
-                  <h4 class="text-base sm:text-lg font-bold mt-3">VaultX Protocol</h4>
-                  <p class="text-xs text-slate-400 mt-1">Multi-sig smart contract wallet with passkey auth UX.</p>
-                </div>
-                <div class="bg-slate-900 rounded-2xl p-3 border border-slate-800">
-                  <div class="flex justify-between items-center text-xs">
-                    <span class="text-slate-400">TVL Monitored</span>
-                    <span class="text-emerald-400 font-mono font-bold">$142.8M</span>
-                  </div>
-                </div>
-                <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-slate-800">
-                  <span>Click to view details</span>
-                  <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-emerald-400"></i>
-                </div>
-              </div>
-
             </div>
 
-            <!-- Controls -->
-            <div class="flex items-center justify-center gap-4 mt-6">
-              <button onclick="prevSlide()" aria-label="Previous Slide" class="w-10 h-10 rounded-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 flex items-center justify-center hover:bg-sky-50 dark:hover:bg-slate-700 transition-all shadow-sm">
-                <i data-lucide="chevron-left" class="w-5 h-5"></i>
-              </button>
-              <div class="flex gap-2" id="carouselDots">
-                <button onclick="setCarouselIndex(0)" class="dot w-6 h-2.5 rounded-full bg-sky-500 transition-all"></button>
-                <button onclick="setCarouselIndex(1)" class="dot w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700 transition-all"></button>
-                <button onclick="setCarouselIndex(2)" class="dot w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700 transition-all"></button>
-                <button onclick="setCarouselIndex(3)" class="dot w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700 transition-all"></button>
-                <button onclick="setCarouselIndex(4)" class="dot w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700 transition-all"></button>
-              </div>
-              <button onclick="nextSlide()" aria-label="Next Slide" class="w-10 h-10 rounded-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 flex items-center justify-center hover:bg-sky-50 dark:hover:bg-slate-700 transition-all shadow-sm">
-                <i data-lucide="chevron-right" class="w-5 h-5"></i>
-              </button>
+            <div class="mt-4 pt-3 border-t border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between text-xs text-slate-500">
+              <span>Standard delivery:</span>
+              <span class="font-medium text-slate-800 dark:text-slate-200">Figma Files + Components</span>
             </div>
           </div>
 
-          <!-- VIEW B: INTERACTIVE PHONE SIMULATOR (iPhone with Dynamic Island) -->
-          <div id="view-phone" class="hidden w-full flex flex-col items-center">
-            <div class="text-center max-w-sm mb-4">
-              <p class="text-xs font-bold uppercase tracking-wider text-indigo-500">iOS Ergonomics Specimen</p>
-              <h3 class="text-lg font-bold text-slate-900 dark:text-white">Tap Tabs & Buttons in Simulated iPhone</h3>
-            </div>
+        </div> <!-- /Bento Grid -->
 
-            <!-- Phone Body -->
-            <div class="relative w-[300px] sm:w-[330px] h-[580px] sm:h-[620px] bg-slate-950 rounded-[44px] sm:rounded-[48px] p-2.5 sm:p-3 shadow-phone border-4 border-slate-800">
-              
-              <!-- Hardware Buttons -->
-              <div class="absolute -left-2.5 top-20 w-1.5 h-8 bg-slate-700 rounded-l"></div>
-              <div class="absolute -left-2.5 top-32 w-1.5 h-12 bg-slate-700 rounded-l"></div>
-              <div class="absolute -left-2.5 top-48 w-1.5 h-12 bg-slate-700 rounded-l"></div>
-              <div class="absolute -right-2.5 top-28 w-1.5 h-14 bg-slate-700 rounded-r"></div>
+      </div> <!-- /Main Right Column -->
+    </div> <!-- /Desktop Bento View -->
 
-              <!-- Screen -->
-              <div class="w-full h-full bg-[#f8fafc] dark:bg-[#090d16] rounded-[34px] sm:rounded-[38px] overflow-hidden flex flex-col relative text-slate-800 dark:text-slate-100">
-                
-                <!-- Dynamic Island Status Bar -->
-                <div class="pt-2 px-5 flex justify-between items-center z-20">
-                  <span class="text-[11px] font-bold">9:41</span>
-                  <div class="w-22 h-4.5 bg-black rounded-full flex items-center justify-center gap-1 shadow-xs px-2">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <span class="text-[8px] text-white font-mono">Dynamic Flow</span>
-                  </div>
-                  <div class="flex items-center gap-1 text-[11px]">
-                    <i data-lucide="wifi" class="w-3 h-3"></i>
-                    <i data-lucide="battery" class="w-3.5 h-3.5"></i>
-                  </div>
-                </div>
+  </main>
 
-                <!-- Scrollable Phone App Body -->
-                <div class="flex-1 overflow-y-auto no-scrollbar p-3.5 sm:p-4 space-y-3 pt-2" id="phoneAppBody">
-                  
-                  <!-- Screen A: Wallet Mode -->
-                  <div id="phoneScreen-home" class="space-y-3">
-                    <div class="flex items-center justify-between">
-                      <div class="flex items-center gap-2">
-                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" alt="Avatar" class="w-8 h-8 rounded-full object-cover">
-                        <div>
-                          <div class="text-xs font-bold">Aura Portfolio</div>
-                          <div class="text-[9px] text-slate-400">Live Simulation</div>
-                        </div>
-                      </div>
-                      <button onclick="phoneFeedback('Notifications checked')" class="w-7 h-7 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-xs">
-                        <i data-lucide="bell" class="w-3.5 h-3.5"></i>
-                      </button>
-                    </div>
-
-                    <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-2xl p-3.5 shadow-md">
-                      <div class="flex justify-between items-center text-[9px] text-indigo-200">
-                        <span>Total Portfolio Value</span>
-                        <span class="px-1.5 py-0.5 rounded bg-indigo-500/30 text-indigo-300 font-mono">+18.4%</span>
-                      </div>
-                      <div class="text-lg font-black mt-1">$128,490.00</div>
-                      <div class="flex gap-2 mt-2.5">
-                        <button onclick="phoneFeedback('Transfer modal opened')" class="flex-1 py-1 rounded-lg bg-sky-500 text-[10px] font-bold text-white text-center hover:bg-sky-400">
-                          Transfer
-                        </button>
-                        <button onclick="phoneFeedback('Analytics report generated')" class="flex-1 py-1 rounded-lg bg-white/10 text-[10px] font-bold text-white text-center hover:bg-white/20">
-                          Rebalance
-                        </button>
-                      </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-2">
-                      <div class="bg-white dark:bg-slate-800/80 p-2.5 rounded-xl border border-slate-200/80 dark:border-slate-700/60">
-                        <div class="text-[9px] text-slate-400">Active Yield</div>
-                        <div class="text-xs font-bold text-slate-900 dark:text-white">6.8% APY</div>
-                        <div class="text-[8px] text-emerald-500 mt-0.5">Automated</div>
-                      </div>
-                      <div class="bg-white dark:bg-slate-800/80 p-2.5 rounded-xl border border-slate-200/80 dark:border-slate-700/60">
-                        <div class="text-[9px] text-slate-400">Smart Slices</div>
-                        <div class="text-xs font-bold text-slate-900 dark:text-white">8 Assets</div>
-                        <div class="text-[8px] text-sky-500 mt-0.5">Hedging On</div>
-                      </div>
-                    </div>
-
-                    <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 flex items-center justify-between cursor-pointer hover:border-sky-400" onclick="phoneFeedback('Opened S&P 500 slice')">
-                      <div class="flex items-center gap-2">
-                        <div class="w-6 h-6 rounded-lg bg-sky-100 dark:bg-sky-950 text-sky-600 flex items-center justify-center font-bold text-[10px]">SP</div>
-                        <div>
-                          <div class="text-xs font-bold">Tech Bluechips</div>
-                          <div class="text-[8px] text-slate-400">Automated DCA</div>
-                        </div>
-                      </div>
-                      <span class="text-xs font-mono font-bold text-emerald-500">+$2,410</span>
-                    </div>
-                  </div>
-
-                  <!-- Feedback Toast in Phone -->
-                  <div id="phoneToast" class="opacity-0 transition-opacity duration-300 text-center py-1.5 px-3 rounded-lg bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-[10px] font-semibold">
-                    Interaction triggered
-                  </div>
-                </div>
-
-                <!-- Bottom Tab Bar -->
-                <div class="pt-1.5 pb-2 px-6 bg-white/95 dark:bg-slate-900/95 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center text-slate-400">
-                  <button onclick="phoneFeedback('Navigated to Home tab')" class="text-sky-500 flex flex-col items-center">
-                    <i data-lucide="home" class="w-4 h-4"></i>
-                    <span class="text-[8px] font-bold mt-0.5">Home</span>
-                  </button>
-                  <button onclick="phoneFeedback('Navigated to Markets tab')" class="hover:text-slate-900 dark:hover:text-white flex flex-col items-center">
-                    <i data-lucide="trending-up" class="w-4 h-4"></i>
-                    <span class="text-[8px] mt-0.5">Markets</span>
-                  </button>
-                  <button onclick="phoneFeedback('Opened AI Assistant')" class="hover:text-slate-900 dark:hover:text-white flex flex-col items-center">
-                    <i data-lucide="sparkles" class="w-4 h-4"></i>
-                    <span class="text-[8px] mt-0.5">Copilot</span>
-                  </button>
-                  <button onclick="phoneFeedback('Viewing Settings')" class="hover:text-slate-900 dark:hover:text-white flex flex-col items-center">
-                    <i data-lucide="settings" class="w-4 h-4"></i>
-                    <span class="text-[8px] mt-0.5">Settings</span>
-                  </button>
-                </div>
-
-                <!-- Home Bar -->
-                <div class="w-24 h-1 bg-slate-400 dark:bg-slate-600 rounded-full mx-auto my-1"></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- VIEW C: TABLET / IPAD SIMULATOR -->
-          <div id="view-tablet" class="hidden w-full flex flex-col items-center">
-            <div class="text-center max-w-sm mb-4">
-              <p class="text-xs font-bold uppercase tracking-wider text-sky-500">Tablet Screen Layout</p>
-              <h3 class="text-lg font-bold text-slate-900 dark:text-white">Responsive 2-Pane SaaS Cockpit</h3>
-            </div>
-
-            <!-- Tablet Frame -->
-            <div class="relative w-full max-w-[560px] h-[360px] sm:h-[400px] bg-slate-950 rounded-[32px] p-3 shadow-tablet border-4 border-slate-800">
-              <div class="w-full h-full bg-white dark:bg-slate-900 rounded-[22px] overflow-hidden flex flex-col">
-                <!-- Tablet Top Status -->
-                <div class="px-4 py-2 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center text-xs text-slate-500">
-                  <span class="font-bold">OmniFlow Studio Tablet Edition</span>
-                  <div class="flex items-center gap-2">
-                    <span class="text-[10px] px-2 py-0.5 rounded bg-sky-100 dark:bg-sky-950 text-sky-600 font-semibold">120 FPS Canvas</span>
-                    <i data-lucide="battery" class="w-4 h-4"></i>
-                  </div>
-                </div>
-                <!-- 2-Pane Content -->
-                <div class="flex-1 flex overflow-hidden">
-                  <!-- Left Sidebar in Tablet -->
-                  <div class="w-36 bg-slate-50 dark:bg-slate-850 border-r border-slate-200 dark:border-slate-800 p-2.5 space-y-1.5 text-[11px] font-semibold text-slate-600 dark:text-slate-300">
-                    <div class="p-1.5 rounded-lg bg-sky-500 text-white flex items-center gap-1.5">
-                      <i data-lucide="activity" class="w-3.5 h-3.5"></i> Flow Engine
-                    </div>
-                    <div class="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 flex items-center gap-1.5">
-                      <i data-lucide="database" class="w-3.5 h-3.5"></i> Vectors
-                    </div>
-                    <div class="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 flex items-center gap-1.5">
-                      <i data-lucide="shield" class="w-3.5 h-3.5"></i> Guardrails
-                    </div>
-                  </div>
-                  <!-- Right Canvas in Tablet -->
-                  <div class="flex-1 p-3 flex flex-col justify-between bg-slate-100/50 dark:bg-slate-900/50">
-                    <div class="grid grid-cols-2 gap-2">
-                      <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-                        <div class="text-[9px] text-slate-400">Node Pipeline 01</div>
-                        <div class="text-xs font-bold mt-0.5">Semantic Embeddings</div>
-                        <div class="text-[9px] text-emerald-500 mt-1">● Latency: 12ms</div>
-                      </div>
-                      <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-                        <div class="text-[9px] text-slate-400">Node Pipeline 02</div>
-                        <div class="text-xs font-bold mt-0.5">Reranker Model</div>
-                        <div class="text-[9px] text-sky-500 mt-1">● Top-k: 5 Chunks</div>
-                      </div>
-                    </div>
-                    <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex justify-between items-center">
-                      <span class="text-xs font-semibold">Active Agent Workspace</span>
-                      <button onclick="triggerToast('Tablet pipeline executed successfully!')" class="px-3 py-1 rounded-lg bg-sky-500 text-white text-xs font-bold hover:bg-sky-400">
-                        Run Flow
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- VIEW D: WATCHOS SMARTWATCH SIMULATOR -->
-          <div id="view-watch" class="hidden w-full flex flex-col items-center">
-            <div class="text-center max-w-sm mb-4">
-              <p class="text-xs font-bold uppercase tracking-wider text-pink-500">watchOS 40mm Form Factor</p>
-              <h3 class="text-lg font-bold text-slate-900 dark:text-white">Wearable Complications & Glances</h3>
-            </div>
-
-            <!-- Straps & Body -->
-            <div class="flex flex-col items-center">
-              <div class="w-28 h-6 bg-slate-800 rounded-t-xl shadow-inner border-t border-slate-700"></div>
-
-              <!-- Watch Shell -->
-              <div class="relative w-[210px] h-[256px] bg-slate-950 rounded-[44px] p-2.5 shadow-watch border-2 border-slate-700 flex flex-col items-center justify-center">
-                <div class="absolute -right-2.5 top-14 w-2 h-8 bg-slate-600 rounded-r border-r border-slate-500"></div>
-                <div class="absolute -right-2 top-28 w-1.5 h-5 bg-slate-700 rounded-r"></div>
-
-                <!-- OLED Screen -->
-                <div class="w-full h-full bg-black rounded-[36px] overflow-hidden flex flex-col p-3 text-white select-none">
-                  <div class="flex justify-between items-center text-[10px] text-slate-400 pb-1">
-                    <span class="font-bold text-sky-400">10:09</span>
-                    <span class="text-[8px] text-emerald-400 font-mono">100%</span>
-                  </div>
-
-                  <div class="flex-1 overflow-y-auto no-scrollbar space-y-2 pt-1 text-center">
-                    <div class="w-8 h-8 rounded-full bg-sky-500/20 border border-sky-500/40 mx-auto flex items-center justify-center">
-                      <i data-lucide="activity" class="w-4 h-4 text-sky-400"></i>
-                    </div>
-
-                    <div class="text-[11px] font-bold leading-tight">Sprint Pulse</div>
-                    <div class="text-[8px] text-slate-400">Design Team Standup</div>
-
-                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-2 text-left">
-                      <div class="text-[8px] text-slate-400">Review Request</div>
-                      <div class="text-[10px] font-bold text-sky-400">FinNova Token PR</div>
-                      <div class="text-[8px] text-emerald-400">● 4 Approvals Needed</div>
-                    </div>
-
-                    <button onclick="triggerToast('Haptic ping sent to designer watch!')" class="w-full py-1.5 rounded-lg bg-sky-500 text-white text-[9px] font-bold hover:bg-sky-400 active:scale-95 transition-all">
-                      Approve & Deploy
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div class="w-28 h-6 bg-slate-800 rounded-b-xl shadow-inner border-b border-slate-700"></div>
-            </div>
-          </div>
-
-        </div>
-
-      </section>
-
-      <!-- ==============================================
-           5. DEDICATED FEATURE: ABOUT & CAREER TIMELINE
-      =================================================== -->
-      <section id="about-section" class="mb-14 sm:mb-20 scroll-mt-6">
-        <div class="bg-white/80 dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 rounded-3xl p-6 sm:p-8 md:p-10 shadow-bento backdrop-blur-md">
-          
-          <div class="max-w-2xl mb-8">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 text-xs font-bold uppercase tracking-wider mb-2">
-              <i data-lucide="user" class="w-3.5 h-3.5"></i>
-              Biography & Methodology
-            </div>
-            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-950 dark:text-white">
-              Behind the Interfaces: Philosophy & Journey
-            </h2>
-            <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Bridging high-empathy user experience with structural engineering rigor for over eight years.</p>
-          </div>
-
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            
-            <!-- Core Philosophy Cards (7 cols) -->
-            <div class="lg:col-span-7 space-y-4">
-              
-              <div class="p-4 sm:p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700">
-                <div class="flex items-center gap-3 mb-2">
-                  <div class="w-8 h-8 rounded-xl bg-orange-100 dark:bg-orange-950/70 text-orange-600 flex items-center justify-center">
-                    <i data-lucide="zap" class="w-4 h-4"></i>
-                  </div>
-                  <h3 class="text-sm font-bold text-slate-900 dark:text-white">Frictionless Density</h3>
-                </div>
-                <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                  Power users don't want oversized blank space; they want contextual density. I design dashboards that expose deep telemetry without causing cognitive overload.
-                </p>
-              </div>
-
-              <div class="p-4 sm:p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700">
-                <div class="flex items-center gap-3 mb-2">
-                  <div class="w-8 h-8 rounded-xl bg-sky-100 dark:bg-sky-950/70 text-sky-600 flex items-center justify-center">
-                    <i data-lucide="code" class="w-4 h-4"></i>
-                  </div>
-                  <h3 class="text-sm font-bold text-slate-900 dark:text-white">Design-to-Code Symmetry</h3>
-                </div>
-                <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                  I write clean TypeScript, Tailwind, and React. Designing with production constraints in mind guarantees zero loss in visual and functional translation during development handoff.
-                </p>
-              </div>
-
-              <div class="p-4 sm:p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700">
-                <div class="flex items-center gap-3 mb-2">
-                  <div class="w-8 h-8 rounded-xl bg-purple-100 dark:bg-purple-950/70 text-purple-600 flex items-center justify-center">
-                    <i data-lucide="smartphone" class="w-4 h-4"></i>
-                  </div>
-                  <h3 class="text-sm font-bold text-slate-900 dark:text-white">Responsive Ergonomics First</h3>
-                </div>
-                <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                  From thumb-reach zones on mobile to 4K multi-monitor layouts, products must seamlessly breathe across every touch and pointer medium without compromise.
-                </p>
-              </div>
-
-              <!-- Skills Matrix -->
-              <div class="pt-4">
-                <span class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">
-                  Core Skills & Competency Matrix
-                </span>
-                <div class="space-y-2.5">
-                  <div>
-                    <div class="flex justify-between text-xs font-bold mb-1">
-                      <span>Design Systems & Tokens (Figma/Style Dictionary)</span>
-                      <span class="text-sky-500 font-mono">98%</span>
-                    </div>
-                    <div class="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                      <div class="h-full bg-sky-500 w-[98%] rounded-full"></div>
-                    </div>
-                  </div>
-                  <div>
-                    <div class="flex justify-between text-xs font-bold mb-1">
-                      <span>Prototyping & Micro-interactions (Framer/Code)</span>
-                      <span class="text-indigo-500 font-mono">94%</span>
-                    </div>
-                    <div class="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                      <div class="h-full bg-indigo-500 w-[94%] rounded-full"></div>
-                    </div>
-                  </div>
-                  <div>
-                    <div class="flex justify-between text-xs font-bold mb-1">
-                      <span>User Research & Information Architecture</span>
-                      <span class="text-emerald-500 font-mono">90%</span>
-                    </div>
-                    <div class="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                      <div class="h-full bg-emerald-500 w-[90%] rounded-full"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
-            <!-- Career Timeline (5 cols) -->
-            <div class="lg:col-span-5 bg-slate-50 dark:bg-slate-850 p-6 rounded-3xl border border-slate-200 dark:border-slate-800">
-              <h3 class="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-5">
-                Career Milestones & Roles
-              </h3>
-
-              <div class="relative pl-6 space-y-6 border-l-2 border-slate-200 dark:border-slate-700">
-                
-                <!-- Role 1 -->
-                <div class="relative">
-                  <div class="absolute -left-[31px] top-0 w-3.5 h-3.5 rounded-full bg-sky-500 border-2 border-white dark:border-slate-900"></div>
-                  <div class="text-[10px] font-mono text-sky-500 font-bold">2024 — PRESENT</div>
-                  <div class="text-sm font-bold text-slate-900 dark:text-white mt-0.5">Staff Product Designer</div>
-                  <div class="text-xs text-slate-500 dark:text-slate-400">FinNova Platforms • San Francisco</div>
-                  <p class="text-xs text-slate-600 dark:text-slate-300 mt-1.5">Directing core trading UX, multi-device design system, and AI copilot interactions.</p>
-                </div>
-
-                <!-- Role 2 -->
-                <div class="relative">
-                  <div class="absolute -left-[31px] top-0 w-3.5 h-3.5 rounded-full bg-indigo-500 border-2 border-white dark:border-slate-900"></div>
-                  <div class="text-[10px] font-mono text-indigo-500 font-bold">2021 — 2024</div>
-                  <div class="text-sm font-bold text-slate-900 dark:text-white mt-0.5">Lead UI/UX Designer</div>
-                  <div class="text-xs text-slate-500 dark:text-slate-400">OmniStudio Interactive • Remote</div>
-                  <p class="text-xs text-slate-600 dark:text-slate-300 mt-1.5">Scaled enterprise SaaS from $2M to $18M ARR. Led design team of 6 product designers.</p>
-                </div>
-
-                <!-- Role 3 -->
-                <div class="relative">
-                  <div class="absolute -left-[31px] top-0 w-3.5 h-3.5 rounded-full bg-slate-400 border-2 border-white dark:border-slate-900"></div>
-                  <div class="text-[10px] font-mono text-slate-400 font-bold">2018 — 2021</div>
-                  <div class="text-sm font-bold text-slate-900 dark:text-white mt-0.5">Senior Interaction Designer</div>
-                  <div class="text-xs text-slate-500 dark:text-slate-400">VentureCraft Agency • New York</div>
-                  <p class="text-xs text-slate-600 dark:text-slate-300 mt-1.5">Shipped 24+ native iOS and responsive web apps for Fortune 500 clients.</p>
-                </div>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-      </section>
-
-      <!-- ==============================================
-           6. DEDICATED FEATURE: CONTACT & CALENDAR SCHEDULER
-      =================================================== -->
-      <section id="contact-section" class="mb-14 sm:mb-20 scroll-mt-6">
-        <div class="bg-white/80 dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 rounded-3xl p-6 sm:p-8 md:p-10 shadow-bento backdrop-blur-md">
-          
-          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
-            <div>
-              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400 text-xs font-bold uppercase tracking-wider mb-2">
-                <i data-lucide="message-square" class="w-3.5 h-3.5"></i>
-                Initiate Collaboration
-              </div>
-              <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-950 dark:text-white">
-                Let's Build Something Exceptional
-              </h2>
-              <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Send a detailed project brief or pick a direct slot on my calendar below.</p>
-            </div>
-
-            <!-- Tab Switcher: Message vs Schedule -->
-            <div class="bg-slate-100 dark:bg-slate-800 p-1 rounded-2xl flex items-center gap-1">
-              <button id="tab-btn-message" onclick="switchContactTab('message')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs transition-all">
-                Send Brief
-              </button>
-              <button id="tab-btn-schedule" onclick="switchContactTab('schedule')" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all">
-                Schedule Call
-              </button>
-            </div>
-          </div>
-
-          <!-- TAB 1: INTERACTIVE CONTACT FORM -->
-          <div id="contactTab-message">
-            <form onsubmit="handleContactSubmit(event)" class="space-y-4 max-w-3xl">
-              
-              <!-- Topic Badges -->
-              <div>
-                <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
-                  Engagement Type
-                </label>
-                <div class="flex flex-wrap gap-2" id="topicPills">
-                  <button type="button" onclick="selectTopic(this)" class="topic-pill active px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-white dark:bg-white dark:text-slate-900 border border-transparent">
-                    New Product MVP
-                  </button>
-                  <button type="button" onclick="selectTopic(this)" class="topic-pill px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
-                    Design System
-                  </button>
-                  <button type="button" onclick="selectTopic(this)" class="topic-pill px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
-                    UX Audit & Redesign
-                  </button>
-                  <button type="button" onclick="selectTopic(this)" class="topic-pill px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
-                    Full-time Leadership
-                  </button>
-                </div>
-              </div>
-
-              <!-- Inputs -->
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Your Name</label>
-                  <input type="text" required placeholder="Elena Rostova" class="w-full px-4 py-3 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:ring-2 focus:ring-sky-500 focus:outline-none dark:text-white">
-                </div>
-                <div>
-                  <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Work Email</label>
-                  <input type="email" required placeholder="elena@company.com" class="w-full px-4 py-3 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:ring-2 focus:ring-sky-500 focus:outline-none dark:text-white">
-                </div>
-              </div>
-
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Target Budget Range</label>
-                  <select class="w-full px-4 py-3 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:ring-2 focus:ring-sky-500 focus:outline-none dark:text-white">
-                    <option>$5,000 - $10,000</option>
-                    <option>$10,000 - $25,000</option>
-                    <option>$25,000 - $50,000+</option>
-                    <option>Retainer / Advisory</option>
-                  </select>
-                </div>
-                <div>
-                  <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Ideal Start Date</label>
-                  <select class="w-full px-4 py-3 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:ring-2 focus:ring-sky-500 focus:outline-none dark:text-white">
-                    <option>Immediately (This Month)</option>
-                    <option>Within 30 Days</option>
-                    <option>Exploring for Next Quarter</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Project Scope & Objectives</label>
-                <textarea rows="4" required placeholder="Tell me about your product, existing pain points, user personas, and target timeline..." class="w-full px-4 py-3 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:ring-2 focus:ring-sky-500 focus:outline-none dark:text-white"></textarea>
-              </div>
-
-              <button type="submit" class="px-8 py-3.5 rounded-full bg-slate-950 dark:bg-white text-white dark:text-slate-900 text-xs sm:text-sm font-bold hover:shadow-xl hover:scale-[1.01] active:scale-95 transition-all flex items-center gap-2">
-                <span>Dispatch Project Brief</span>
-                <i data-lucide="send" class="w-4 h-4"></i>
-              </button>
-            </form>
-          </div>
-
-          <!-- TAB 2: INTERACTIVE CALENDAR MEETING SCHEDULER -->
-          <div id="contactTab-schedule" class="hidden">
-            <div class="max-w-2xl bg-slate-50 dark:bg-slate-850 p-6 rounded-3xl border border-slate-200 dark:border-slate-800">
-              <div class="flex items-center gap-3 pb-4 border-b border-slate-200 dark:border-slate-700 mb-5">
-                <div class="w-10 h-10 rounded-2xl bg-sky-500 text-white flex items-center justify-center">
-                  <i data-lucide="video" class="w-5 h-5"></i>
-                </div>
-                <div>
-                  <h3 class="text-sm font-bold text-slate-900 dark:text-white">30-Minute Discovery Video Call</h3>
-                  <p class="text-xs text-slate-500 dark:text-slate-400">Google Meet • Cassiopeia Obelidor & You</p>
-                </div>
-              </div>
-
-              <!-- Day Slot Selector -->
-              <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
-                Select Date
-              </label>
-              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4" id="calendarDays">
-                <button type="button" onclick="selectCalDay(this)" class="cal-day active p-3 rounded-2xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-center font-semibold text-xs border border-transparent">
-                  <div class="text-[10px] uppercase opacity-75">Tomorrow</div>
-                  <div class="font-bold text-sm">Tue, Oct 20</div>
-                </button>
-                <button type="button" onclick="selectCalDay(this)" class="cal-day p-3 rounded-2xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-center font-semibold text-xs border border-slate-200 dark:border-slate-700">
-                  <div class="text-[10px] uppercase opacity-75">Wednesday</div>
-                  <div class="font-bold text-sm">Oct 21</div>
-                </button>
-                <button type="button" onclick="selectCalDay(this)" class="cal-day p-3 rounded-2xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-center font-semibold text-xs border border-slate-200 dark:border-slate-700">
-                  <div class="text-[10px] uppercase opacity-75">Thursday</div>
-                  <div class="font-bold text-sm">Oct 22</div>
-                </button>
-                <button type="button" onclick="selectCalDay(this)" class="cal-day p-3 rounded-2xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-center font-semibold text-xs border border-slate-200 dark:border-slate-700">
-                  <div class="text-[10px] uppercase opacity-75">Friday</div>
-                  <div class="font-bold text-sm">Oct 23</div>
-                </button>
-              </div>
-
-              <!-- Time Slot Selector -->
-              <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
-                Available Times (PST Timezone)
-              </label>
-              <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-6" id="calendarTimes">
-                <button type="button" onclick="selectCalTime(this)" class="cal-time active p-2.5 rounded-xl bg-sky-500 text-white text-xs font-bold text-center">
-                  10:00 AM PST
-                </button>
-                <button type="button" onclick="selectCalTime(this)" class="cal-time p-2.5 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold text-center border border-slate-200 dark:border-slate-700 hover:border-sky-400">
-                  1:30 PM PST
-                </button>
-                <button type="button" onclick="selectCalTime(this)" class="cal-time p-2.5 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold text-center border border-slate-200 dark:border-slate-700 hover:border-sky-400">
-                  3:00 PM PST
-                </button>
-                <button type="button" onclick="selectCalTime(this)" class="cal-time p-2.5 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold text-center border border-slate-200 dark:border-slate-700 hover:border-sky-400">
-                  4:30 PM PST
-                </button>
-              </div>
-
-              <button onclick="confirmScheduleCall()" class="w-full py-3.5 rounded-2xl bg-sky-500 hover:bg-sky-400 text-white text-xs sm:text-sm font-bold shadow-lg hover:shadow-sky-500/25 active:scale-95 transition-all flex items-center justify-center gap-2">
-                <i data-lucide="check-circle" class="w-4 h-4"></i>
-                <span>Confirm 30-Min Discovery Slot</span>
-              </button>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      <!-- Footer Bar -->
-      <footer class="pt-6 pb-12 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-4">
-        <div class="flex items-center gap-2">
-          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-          <span>Designed with precision in San Francisco • Crafted with Tailwind & TypeScript logic</span>
-        </div>
-        <div class="flex gap-4">
-          <button onclick="copyToClipboard('obelidorcassiopeia@gmail.com', 'Email copied!')" class="hover:text-slate-700 dark:hover:text-slate-200">Email</button>
-          <button onclick="copyToClipboard('https://linkedin.com/in/obelidorcassiopeia', 'LinkedIn copied!')" class="hover:text-slate-700 dark:hover:text-slate-200">LinkedIn</button>
-          <button onclick="copyToClipboard('https://x.com/obelidorcassiopeia', 'X link copied!')" class="hover:text-slate-700 dark:hover:text-slate-200">Twitter</button>
-        </div>
-      </footer>
-
-    </main>
-  </div>
-
-  <!-- ==============================================
-       CASE STUDY DETAIL MODAL (Deep Dive Specimen)
-  =================================================== -->
-  <div id="caseStudyModal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/75 backdrop-blur-md hidden opacity-0 transition-opacity duration-300">
-    <div id="caseStudyCard" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto no-scrollbar shadow-2xl relative transform scale-95 transition-transform duration-300 text-slate-800 dark:text-slate-100">
+  <!-- ========================================================================= -->
+  <!-- MODAL 1: CREDENTIALS VERIFICATION MODAL -->
+  <!-- ========================================================================= -->
+  <div id="cert-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white dark:bg-charcoal-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-700 relative animate-in fade-in zoom-in-95 duration-200">
       
-      <!-- Close Button -->
-      <button onclick="closeCaseStudyModal()" class="absolute top-5 right-5 z-20 w-8 h-8 rounded-full bg-slate-900/60 dark:bg-white/20 text-white flex items-center justify-center backdrop-blur-md hover:scale-105 transition-all">
-        <i data-lucide="x" class="w-4 h-4"></i>
+      <button onclick="closeCertModal()" class="absolute top-5 right-5 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500">
+        <i data-lucide="x" class="w-5 h-5"></i>
       </button>
 
-      <!-- Modal Hero Image -->
-      <div class="relative h-64 sm:h-80 w-full overflow-hidden">
-        <img id="cs-hero-img" src="" alt="Case Study" class="w-full h-full object-cover">
-        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent flex flex-col justify-end p-6 sm:p-8 text-white">
-          <span id="cs-badge" class="text-xs font-mono text-sky-400 font-bold mb-1">FINTECH CASE STUDY</span>
-          <h2 id="cs-title" class="text-2xl sm:text-4xl font-extrabold tracking-tight">Aura Wealth OS</h2>
-        </div>
-      </div>
-
-      <!-- Modal Content Body -->
-      <div class="p-6 sm:p-8 space-y-8">
-        
-        <!-- Metrics Row -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="cs-metrics">
-          <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-center">
-            <div class="text-xl sm:text-2xl font-black text-sky-500 font-mono">+38%</div>
-            <div class="text-[10px] text-slate-400 uppercase font-semibold mt-0.5">Conversion Growth</div>
-          </div>
-          <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-center">
-            <div class="text-xl sm:text-2xl font-black text-emerald-500 font-mono">1.2s</div>
-            <div class="text-[10px] text-slate-400 uppercase font-semibold mt-0.5">Rebalance Latency</div>
-          </div>
-          <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-center">
-            <div class="text-xl sm:text-2xl font-black text-purple-500 font-mono">4.9/5</div>
-            <div class="text-[10px] text-slate-400 uppercase font-semibold mt-0.5">Trader Satisfaction</div>
-          </div>
-          <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-center">
-            <div class="text-xl sm:text-2xl font-black text-amber-500 font-mono">100%</div>
-            <div class="text-[10px] text-slate-400 uppercase font-semibold mt-0.5">Design Token Sync</div>
-          </div>
-        </div>
-
-        <!-- The Problem & Research -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="space-y-2">
-            <h3 class="text-sm font-bold uppercase tracking-wider text-rose-500 flex items-center gap-2">
-              <i data-lucide="alert-circle" class="w-4 h-4"></i>
-              The Core Challenge
-            </h3>
-            <p id="cs-problem" class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-              Institutional asset allocators were abandoning their order flow due to multi-window disorganization. Execution required over 14 distinct clicks across disjointed modals.
-            </p>
-          </div>
-          <div class="space-y-2">
-            <h3 class="text-sm font-bold uppercase tracking-wider text-emerald-500 flex items-center gap-2">
-              <i data-lucide="check-circle" class="w-4 h-4"></i>
-              The Strategic Solution
-            </h3>
-            <p id="cs-solution" class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-              Constructed a single-pane spatial workspace using unified design tokens and predictive AI portfolio hedging recommendations, cutting task completion time by 64%.
-            </p>
-          </div>
-        </div>
-
-        <!-- Wireframe & Architecture Visual Block -->
-        <div class="space-y-2">
-          <h3 class="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-            Information Architecture & Prototyping Artifacts
-          </h3>
-          <div class="p-4 rounded-2xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 space-y-3">
-            <div class="flex items-center justify-between text-xs font-mono text-slate-500">
-              <span>FIGMA COMPONENT AUDIT</span>
-              <span>18 TOKENS • 120 VARIANTS</span>
-            </div>
-            <div class="h-32 bg-slate-200 dark:bg-slate-700/50 rounded-xl flex items-center justify-center text-xs text-slate-400 font-mono">
-              [ Interactive Wireframe Flow & User Session Node Map Embed ]
-            </div>
-          </div>
-        </div>
-
-        <!-- Tech Stack Tags -->
-        <div class="pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between flex-wrap gap-3">
-          <div class="flex items-center gap-2" id="cs-tools">
-            <span class="text-xs text-slate-400">Tools:</span>
-            <span class="text-xs font-mono px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800">Figma</span>
-            <span class="text-xs font-mono px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800">Tailwind</span>
-            <span class="text-xs font-mono px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800">ProtoPie</span>
-          </div>
-          <button onclick="closeCaseStudyModal(); scrollToSection('contact-section');" class="px-5 py-2 rounded-xl bg-sky-500 text-white text-xs font-bold hover:bg-sky-400 transition-colors">
-            Inquire About Similar Project
-          </button>
-        </div>
-
+      <div id="cert-modal-content">
+        <!-- Rendered via JS depending on certificate clicked -->
       </div>
     </div>
   </div>
 
-  <!-- Global Action Toast -->
-  <div id="globalToast" class="fixed bottom-5 right-5 z-50 pointer-events-none transform translate-y-16 opacity-0 transition-all duration-300 flex items-center gap-2.5 px-4 py-3 rounded-2xl bg-slate-950 text-white dark:bg-white dark:text-slate-900 text-xs font-semibold shadow-2xl border border-slate-800 dark:border-slate-200">
-    <i data-lucide="sparkles" class="w-4 h-4 text-sky-400 dark:text-sky-600"></i>
-    <span id="globalToastText">Notification text</span>
+  <!-- ========================================================================= -->
+  <!-- MODAL 2: CASE STUDY PREVIEW MODAL -->
+  <!-- ========================================================================= -->
+  <div id="project-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white dark:bg-charcoal-800 rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl border border-slate-200 dark:border-slate-700 relative max-h-[90vh] overflow-y-auto">
+      
+      <button onclick="closeProjectModal()" class="absolute top-5 right-5 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="space-y-5">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-100 dark:bg-orange-950 text-accent-orange text-xs font-bold">
+          <i data-lucide="layers" class="w-3.5 h-3.5"></i> Comprehensive UI/UX Case Study
+        </div>
+        <h2 class="font-display font-extrabold text-2xl sm:text-3xl text-slate-900 dark:text-white">
+          HIRAYA BANK — Mobile App User Flow
+        </h2>
+
+        <!-- Interactive Prototype Mockup Canvas -->
+        <div class="p-6 rounded-2xl bg-slate-900 text-slate-100 border border-slate-800 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <span class="text-xs font-mono text-emerald-400 flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Live Wireframe Simulation
+            </span>
+            <span class="text-xs text-slate-400">8 Screen Journey</span>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center text-xs">
+            <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700">
+              <span class="text-[10px] text-accent-orange font-bold block mb-1">01 Empathize</span>
+              <span>15 User Interviews</span>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700">
+              <span class="text-[10px] text-blue-400 font-bold block mb-1">02 Define</span>
+              <span>3 Core Personas</span>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700">
+              <span class="text-[10px] text-emerald-400 font-bold block mb-1">03 Ideate</span>
+              <span>e-KYC Flows</span>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700">
+              <span class="text-[10px] text-purple-400 font-bold block mb-1">04 Test</span>
+              <span>85% Usability Score</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-3 text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+          <h4 class="font-bold text-slate-900 dark:text-white">The Challenge & Problem:</h4>
+          <p>
+            Users frequently abandoned traditional banking registration because of cumbersome manual identity validation and disjointed authentication feedback loops.
+          </p>
+
+          <h4 class="font-bold text-slate-900 dark:text-white">The Solution:</h4>
+          <p>
+            A streamlined 3-step registration flow integrating real-time camera alignment guides for ID scanning, haptic feedback, and a personalized visual dashboard showing instant balance visibility.
+          </p>
+        </div>
+
+        <div class="pt-4 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between">
+          <span class="text-xs text-slate-400">Designed in Figma by Cassiopeia</span>
+          <button onclick="closeProjectModal()" class="px-4 py-2 rounded-xl bg-accent-orange text-white text-xs font-semibold">
+            Done Reviewing
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- ==============================================
-       LOGIC: CONTOUR CANVAS, 3D CAROUSEL, CALCULATOR
-  =================================================== -->
-  <script>
-    // Initialize Lucide Icons
-    lucide.createIcons();
+  <!-- ========================================================================= -->
+<!-- MODAL 3: CONTACT FORM MODAL -->
+<!-- ========================================================================= -->
+<div id="contact-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+  <div class="bg-white dark:bg-charcoal-800 rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-700 relative">
+    <button onclick="closeContactModal()" class="absolute top-5 right-5 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500">
+      <i data-lucide="x" class="w-5 h-5"></i>
+    </button>
 
-    // ----------------------------------------------------
-    // 1. ANIMATED CONTOUR CANVAS (Organic Topography)
-    // ----------------------------------------------------
-    const canvas = document.getElementById('contourCanvas');
-    const ctx = canvas.getContext('2d');
-    let width, height;
-    let time = 0;
-    let mouse = { x: 0.5, y: 0.5, targetX: 0.5, targetY: 0.5 };
+    <div class="space-y-4">
+      <div class="flex items-center gap-3">
+        <div class="p-3 rounded-2xl bg-orange-100 dark:bg-orange-950 text-accent-orange">
+          <i data-lucide="send" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">Get in touch</h3>
+          <p class="text-xs text-slate-500">Let's discuss UI/UX projects or full-time roles.</p>
+        </div>
+      </div>
 
-    function resizeCanvas() {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
+      <form id="contact-form" class="space-y-3" onsubmit="handleContactSubmit(event)">
+        <div>
+          <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Your Name</label>
+          <input type="text" name="name" required placeholder="e.g. Alex Reyes" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-cream-50 dark:bg-slate-900 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-accent-orange">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Email Address</label>
+          <input type="email" name="email" required placeholder="alex@company.com" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-cream-50 dark:bg-slate-900 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-accent-orange">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Message</label>
+          <textarea name="message" rows="3" required placeholder="Tell me about your product or role..." class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-cream-50 dark:bg-slate-900 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-accent-orange"></textarea>
+        </div>
 
-    window.addEventListener('mousemove', (e) => {
-      mouse.targetX = e.clientX / width;
-      mouse.targetY = e.clientY / height;
-    });
+        <div id="contact-feedback" class="hidden p-2.5 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 text-xs font-medium text-center">
+          Message sent! Cassiopeia will reach out promptly.
+        </div>
 
-    window.addEventListener('touchmove', (e) => {
-      if (e.touches.length > 0) {
-        mouse.targetX = e.touches[0].clientX / width;
-        mouse.targetY = e.touches[0].clientY / height;
-      }
-    }, { passive: true });
+        <button id="contact-submit-btn" type="submit" class="w-full py-2.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-semibold text-xs flex items-center justify-center gap-2 hover:opacity-90 transition">
+          <span>Send Message</span>
+          <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
 
-    function getElevation(x, y, t) {
-      const nx = x * 0.0015 + (mouse.x - 0.5) * 0.25;
-      const ny = y * 0.0015 + (mouse.y - 0.5) * 0.25;
-      const wave1 = Math.sin(nx * 3 + t * 0.3) * Math.cos(ny * 3 + t * 0.2);
-      const wave2 = Math.sin(nx * 5 - t * 0.2 + ny * 2) * 0.35;
-      return wave1 + wave2;
-    }
-
-    function drawContours() {
-      ctx.clearRect(0, 0, width, height);
-      mouse.x += (mouse.targetX - mouse.x) * 0.05;
-      mouse.y += (mouse.targetY - mouse.y) * 0.05;
-      time += 0.004;
-
-      const isDark = document.documentElement.classList.contains('dark');
-      ctx.strokeStyle = isDark ? 'rgba(56, 189, 248, 0.12)' : 'rgba(148, 163, 184, 0.24)';
-      ctx.lineWidth = 1.15;
-
-      const step = Math.max(18, Math.floor(width / 60));
-      const numLines = 14;
-
-      for (let l = 0; l < numLines; l++) {
-        const threshold = -0.7 + (l / numLines) * 1.4;
-        ctx.beginPath();
-        for (let x = 0; x <= width + step; x += step) {
-          const sample = getElevation(x, height * 0.5, time);
-          const yOffset = Math.sin(x * 0.003 + time + l * 0.45) * 80 + (l - numLines / 2) * 55;
-          const targetY = height * 0.5 + yOffset + (sample - threshold) * 55;
-
-          if (x === 0) ctx.moveTo(x, targetY);
-          else ctx.lineTo(x, targetY);
-        }
-        ctx.stroke();
-      }
-
-      requestAnimationFrame(drawContours);
-    }
-    requestAnimationFrame(drawContours);
-
-    // ----------------------------------------------------
-    // 2. 3D COVERFLOW PAGE CAROUSEL
-    // ----------------------------------------------------
-    let currentSlide = 0;
-    const slides = document.querySelectorAll('.carousel-item');
-    const totalSlides = slides.length;
-    const dots = document.querySelectorAll('.dot');
-    const touchArea = document.getElementById('carouselTouchArea');
-
-    function updateCarousel() {
-      slides.forEach((slide, index) => {
-        let offset = index - currentSlide;
-        if (offset > Math.floor(totalSlides / 2)) offset -= totalSlides;
-        if (offset < -Math.floor(totalSlides / 2)) offset += totalSlides;
-
-        const isMobile = window.innerWidth < 640;
-        const xTranslate = isMobile ? 48 : 65;
-
-        if (offset === 0) {
-          slide.style.transform = `translateX(0px) translateZ(120px) rotateY(0deg) scale(1)`;
-          slide.style.opacity = '1';
-          slide.style.zIndex = '10';
-          slide.style.filter = 'none';
-          slide.style.pointerEvents = 'auto';
-        } else if (offset === -1) {
-          slide.style.transform = `translateX(-${xTranslate}%) translateZ(0px) rotateY(26deg) scale(0.85)`;
-          slide.style.opacity = '0.6';
-          slide.style.zIndex = '5';
-          slide.style.filter = 'blur(0.5px)';
-          slide.style.pointerEvents = 'auto';
-        } else if (offset === 1) {
-          slide.style.transform = `translateX(${xTranslate}%) translateZ(0px) rotateY(-26deg) scale(0.85)`;
-          slide.style.opacity = '0.6';
-          slide.style.zIndex = '5';
-          slide.style.filter = 'blur(0.5px)';
-          slide.style.pointerEvents = 'auto';
-        } else {
-          const dir = offset > 0 ? 1 : -1;
-          slide.style.transform = `translateX(${dir * 125}%) translateZ(-160px) rotateY(${dir * -35}deg) scale(0.7)`;
-          slide.style.opacity = '0';
-          slide.style.zIndex = '1';
-          slide.style.filter = 'blur(2px)';
-          slide.style.pointerEvents = 'none';
-        }
-      });
-
-      dots.forEach((dot, idx) => {
-        if (idx === currentSlide) {
-          dot.className = 'dot w-6 h-2.5 rounded-full bg-sky-500 transition-all';
-        } else {
-          dot.className = 'dot w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700 transition-all';
-        }
-      });
-    }
-
-    function nextSlide() {
-      currentSlide = (currentSlide + 1) % totalSlides;
-      updateCarousel();
-    }
-
-    function prevSlide() {
-      currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-      updateCarousel();
-    }
-
-    function setCarouselIndex(idx) {
-      currentSlide = idx;
-      updateCarousel();
-    }
-    updateCarousel();
-
-    // Touch Swipe on Carousel Stage
-    let touchStartX = 0;
-    let touchEndX = 0;
-    if (touchArea) {
-      touchArea.addEventListener('touchstart', (e) => {
-        touchStartX = e.changedTouches[0].screenX;
-      }, { passive: true });
-
-      touchArea.addEventListener('touchend', (e) => {
-        touchEndX = e.changedTouches[0].screenX;
-        if (Math.abs(touchEndX - touchStartX) > 40) {
-          if (touchEndX < touchStartX) nextSlide();
-          else prevSlide();
-        }
-      }, { passive: true });
-    }
-
-    // Keyboard Arrow Keys
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowRight') nextSlide();
-      if (e.key === 'ArrowLeft') prevSlide();
-    });
-
-    // ----------------------------------------------------
-    // 3. MULTI-DEVICE VIEW SWITCHER (Carousel, Phone, Tablet, Watch)
-    // ----------------------------------------------------
-    function selectDeviceView(device) {
-      const views = {
-        carousel: document.getElementById('view-carousel'),
-        phone: document.getElementById('view-phone'),
-        tablet: document.getElementById('view-tablet'),
-        watch: document.getElementById('view-watch')
-      };
-
-      const buttons = {
-        carousel: document.getElementById('btn-device-carousel'),
-        phone: document.getElementById('btn-device-phone'),
-        tablet: document.getElementById('btn-device-tablet'),
-        watch: document.getElementById('btn-device-watch')
-      };
-
-      Object.keys(views).forEach(key => {
-        if (key === device) {
-          views[key].classList.remove('hidden');
-          buttons[key].className = 'device-tab active flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-sky-500 text-white transition-all';
-        } else {
-          views[key].classList.add('hidden');
-          buttons[key].className = 'device-tab flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all';
-        }
-      });
-
-      if (device === 'carousel') updateCarousel();
-      lucide.createIcons();
-    }
-
-    function phoneFeedback(msg) {
-      const toast = document.getElementById('phoneToast');
-      toast.innerText = msg;
-      toast.classList.remove('opacity-0');
-      setTimeout(() => {
-        toast.classList.add('opacity-0');
-      }, 1500);
-    }
-
-    // ----------------------------------------------------
-    // 4. PROJECT FILTERING & CASE STUDY MODALS
-    // ----------------------------------------------------
-    const caseStudiesData = [
-      {
-        title: 'Aura Wealth OS',
-        badge: 'FINTECH & TRADING CASE STUDY',
-        hero: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80',
-        problem: 'Institutional portfolio managers were suffering high error rates due to 14 clicks per order rebalance. Cognitive overload led to order execution abandonment.',
-        solution: 'Engineered a unified single-pane trade desk using atomic token primitives and predictive rebalancing chips, reducing execution time by 64% and boosting transaction volume by 38%.'
-      },
-      {
-        title: 'PulseGen Biometrics iOS',
-        badge: 'MOBILE & WEARABLE HEALTH STUDY',
-        hero: 'https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?auto=format&fit=crop&w=1200&q=80',
-        problem: 'Athletes could not quickly interpret conflicting physiological signals during high-intensity training without breaking running rhythm.',
-        solution: 'Formulated a high-contrast glanceable iOS and watchOS interface utilizing haptic confirmation patterns and spatial telemetry curves.'
-      },
-      {
-        title: 'Prism Design System 3.0',
-        badge: 'ENTERPRISE SYSTEM ARCHITECTURE',
-        hero: 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=1200&q=80',
-        problem: 'Engineering teams across 6 business divisions were repeatedly rebuilding identical buttons and inputs, causing divergent brand styles and accessibility bugs.',
-        solution: 'Built 240+ multi-brand design tokens connected from Figma variables to Tailwind / React repos with automated PR validation and WCAG AAA compliance.'
-      },
-      {
-        title: 'OmniFlow Studio',
-        badge: 'SAAS WORKFLOW AUTOMATION',
-        hero: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80',
-        problem: 'Non-technical product managers couldn\'t orchestrate multi-agent LLM pipelines without writing manual Python scripts.',
-        solution: 'Designed an infinite canvas workspace with intuitive semantic nodes, live visual debugger, and instant test sandbox that helped secure $14M Series A.'
-      }
-    ];
-
-    function filterProjects(cat) {
-      const cards = document.querySelectorAll('.project-card');
-      const buttons = document.querySelectorAll('#projectFilterGroup .filter-btn');
-
-      buttons.forEach(btn => {
-        btn.className = 'filter-btn px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-sky-400 transition-all';
-      });
-      event.target.className = 'filter-btn active px-3.5 py-1.5 rounded-full text-xs font-bold bg-slate-900 text-white dark:bg-white dark:text-slate-900 transition-all';
-
-      cards.forEach(card => {
-        if (cat === 'all' || card.dataset.category === cat) {
-          card.classList.remove('hidden');
-        } else {
-          card.classList.add('hidden');
-        }
-      });
-    }
-
-    function openCaseStudyModal(index) {
-      const data = caseStudiesData[index] || caseStudiesData[0];
-      document.getElementById('cs-title').innerText = data.title;
-      document.getElementById('cs-badge').innerText = data.badge;
-      document.getElementById('cs-hero-img').src = data.hero;
-      document.getElementById('cs-problem').innerText = data.problem;
-      document.getElementById('cs-solution').innerText = data.solution;
-
-      const modal = document.getElementById('caseStudyModal');
-      const card = document.getElementById('caseStudyCard');
-      modal.classList.remove('hidden');
-      setTimeout(() => {
-        modal.classList.remove('opacity-0');
-        card.classList.remove('scale-95');
-        card.classList.add('scale-100');
-      }, 10);
-      lucide.createIcons();
-    }
-
-    function closeCaseStudyModal() {
-      const modal = document.getElementById('caseStudyModal');
-      const card = document.getElementById('caseStudyCard');
-      modal.classList.add('opacity-0');
-      card.classList.remove('scale-100');
-      card.classList.add('scale-95');
-      setTimeout(() => modal.classList.add('hidden'), 300);
-    }
-
-    // ----------------------------------------------------
-    // 5. SERVICES & PRICING CALCULATOR
-    // ----------------------------------------------------
-    function calculateScope() {
-      let base = 0;
-      const deliverables = [];
-
-      if (document.getElementById('srv-ui').checked) {
-        base += 3800;
-        deliverables.push('UI/UX Specs');
-      }
-      if (document.getElementById('srv-tokens').checked) {
-        base += 2400;
-        deliverables.push('Design Tokens');
-      }
-      if (document.getElementById('srv-proto').checked) {
-        base += 2200;
-        deliverables.push('Code Prototype');
-      }
-      if (document.getElementById('srv-research').checked) {
-        base += 1500;
-        deliverables.push('Usability Audit');
-      }
-
-      const screens = parseInt(document.getElementById('screenRange').value, 10);
-      document.getElementById('screenCountDisplay').innerText = `${screens} Screens`;
-
-      const screenMultiplier = 1 + (screens - 3) * 0.055;
-      const urgency = parseFloat(document.getElementById('urgencySelect').value);
-
-      const lowEst = Math.round((base * screenMultiplier * urgency) / 100) * 100;
-      const highEst = Math.round((lowEst * 1.25) / 100) * 100;
-
-      document.getElementById('totalEstimatePrice').innerText = `$${lowEst.toLocaleString()} - $${highEst.toLocaleString()}`;
-      
-      let weeks = (screens / 4) * (1 / urgency);
-      weeks = Math.max(1.5, Math.round(weeks * 10) / 10);
-      document.getElementById('timelineEst').innerText = `Estimated duration: ~${weeks} weeks from kickoff`;
-      document.getElementById('summaryDeliverables').innerText = deliverables.length ? deliverables.join(', ') : 'Custom Consultation';
-    }
-    calculateScope();
-
-    function bookWithEstimate() {
-      scrollToSection('contact-section');
-      switchContactTab('schedule');
-      triggerToast('Estimate pre-loaded into discovery schedule!');
-    }
-
-    // ----------------------------------------------------
-    // 6. CONTACT & CALENDAR SCHEDULER LOGIC
-    // ----------------------------------------------------
-    function switchContactTab(tab) {
-      const msgTab = document.getElementById('contactTab-message');
-      const schTab = document.getElementById('contactTab-schedule');
-      const btnMsg = document.getElementById('tab-btn-message');
-      const btnSch = document.getElementById('tab-btn-schedule');
-
-      if (tab === 'message') {
-        msgTab.classList.remove('hidden');
-        schTab.classList.add('hidden');
-        btnMsg.className = 'px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs transition-all';
-        btnSch.className = 'px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all';
-      } else {
-        msgTab.classList.add('hidden');
-        schTab.classList.remove('hidden');
-        btnSch.className = 'px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs transition-all';
-        btnMsg.className = 'px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all';
-      }
-      lucide.createIcons();
-    }
-
-    function selectTopic(el) {
-      document.querySelectorAll('#topicPills .topic-pill').forEach(btn => {
-        btn.className = 'topic-pill px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700';
-      });
-      el.className = 'topic-pill active px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-white dark:bg-white dark:text-slate-900 border border-transparent';
-    }
-
-    function selectCalDay(el) {
-      document.querySelectorAll('#calendarDays .cal-day').forEach(btn => {
-        btn.className = 'cal-day p-3 rounded-2xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-center font-semibold text-xs border border-slate-200 dark:border-slate-700';
-      });
-      el.className = 'cal-day active p-3 rounded-2xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-center font-semibold text-xs border border-transparent';
-    }
-
-    function selectCalTime(el) {
-      document.querySelectorAll('#calendarTimes .cal-time').forEach(btn => {
-        btn.className = 'cal-time p-2.5 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold text-center border border-slate-200 dark:border-slate-700 hover:border-sky-400';
-      });
-      el.className = 'cal-time active p-2.5 rounded-xl bg-sky-500 text-white text-xs font-bold text-center';
-    }
-
-    function handleContactSubmit(e) {
-      e.preventDefault();
-      triggerToast('Project brief dispatched! I will respond within 24 hours.');
-      e.target.reset();
-    }
-
-    function confirmScheduleCall() {
-      triggerToast('Confirmed! Google Meet invitation sent to your calendar.');
-    }
-
-    // ----------------------------------------------------
-    // 7. UTILITIES: TOASTS, SCROLL, THEME, COPY
-    // ----------------------------------------------------
-    function triggerToast(text) {
-      const toast = document.getElementById('globalToast');
-      const toastText = document.getElementById('globalToastText');
-      toastText.innerText = text;
-      toast.classList.remove('translate-y-16', 'opacity-0');
-      toast.classList.add('translate-y-0', 'opacity-100');
-      setTimeout(() => {
-        toast.classList.remove('translate-y-0', 'opacity-100');
-        toast.classList.add('translate-y-16', 'opacity-0');
-      }, 2500);
-    }
-
-    function copyToClipboard(text, successMsg) {
-      const tempInput = document.createElement('input');
-      tempInput.value = text;
-      document.body.appendChild(tempInput);
-      tempInput.select();
-      document.execCommand('copy');
-      document.body.removeChild(tempInput);
-      triggerToast(successMsg || 'Copied to clipboard!');
-    }
-
-    function scrollToSection(id) {
-      const target = document.getElementById(id);
-      if (target) target.scrollIntoView({ behavior: 'smooth' });
-    }
-
-    function mobileNavigate(id) {
-      toggleMobileMenu();
-      scrollToSection(id);
-    }
-
-    let mobileOpen = false;
-    function toggleMobileMenu() {
-      const drawer = document.getElementById('mobileDrawer');
-      const overlay = document.getElementById('mobileDrawerOverlay');
-      mobileOpen = !mobileOpen;
-
-      if (mobileOpen) {
-        overlay.classList.remove('hidden');
-        setTimeout(() => overlay.classList.remove('opacity-0'), 10);
-        drawer.classList.remove('translate-x-full');
-      } else {
-        overlay.classList.add('opacity-0');
-        drawer.classList.add('translate-x-full');
-        setTimeout(() => overlay.classList.add('hidden'), 300);
-      }
-    }
-
-    function toggleTheme() {
-      const isDark = document.documentElement.classList.toggle('dark');
-      const desktopIcon = document.getElementById('desktopThemeIcon');
-      const mobileIcon = document.querySelector('.mobile-theme-icon');
-
-      if (desktopIcon) desktopIcon.setAttribute('data-lucide', isDark ? 'sun' : 'moon');
-      if (mobileIcon) mobileIcon.setAttribute('data-lucide', isDark ? 'sun' : 'moon');
-      lucide.createIcons();
-    }
-  </script>
+  <!-- Custom Script -->
+  <script src="script.js"></script>
 </body>
 </html>
