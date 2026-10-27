@@ -5,7 +5,7 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  pointer-events: none;
+  pointer-events: none; /* Mahalaga ito para lumusot ang clicks papunta sa button */
   z-index: 0;
   opacity: 0.55;
 }
@@ -39,7 +39,7 @@
   background: rgba(150, 150, 150, 0.5);
 }
 
-/* Realistic iPhone 16 Pro styling */
+/* Realistic iPhone frame styling */
 .iphone-frame {
   width: 390px;
   height: 800px;
@@ -49,7 +49,7 @@
   overflow: hidden;
 }
 
-/* Hide scrollbar for clean phone feel */
+/* Hide scrollbar for clean horizontal tabs */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
@@ -58,3 +58,7 @@
   scrollbar-width: none;
 }
 
+/* Smooth modal section animations */
+.cs-section {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}

@@ -7,7 +7,7 @@
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide Icons CDN -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
   <!-- Google Fonts: Plus Jakarta Sans & Space Grotesk -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -34,15 +34,15 @@
         <div class="backdrop-blur-md bg-white/75 dark:bg-charcoal-800/80 border border-slate-200/80 dark:border-slate-700/80 rounded-3xl p-6 shadow-bento flex flex-col items-center text-center">
           
           <!-- Avatar Silhouette / Picture -->
-<div class="relative group cursor-pointer mb-4">
-  <div id="sidebar-avatar" class="w-28 h-28 rounded-full overflow-hidden border-2 border-slate-200 dark:border-slate-600 bg-slate-100 dark:bg-slate-800 flex items-center justify-center shadow-inner relative">
-    <img 
-      src="profile.jpg" 
-      alt="Cassiopeia Obelidor" 
-      class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
-    />
-  </div>
-</div>
+          <div class="relative group cursor-pointer mb-4">
+            <div id="sidebar-avatar" class="w-28 h-28 rounded-full overflow-hidden border-2 border-slate-200 dark:border-slate-600 bg-slate-100 dark:bg-slate-800 flex items-center justify-center shadow-inner relative">
+              <img 
+                src="profile.jpg" 
+                alt="Cassiopeia Obelidor" 
+                class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+          </div>
 
           <!-- Name & Verification Tag -->
           <div class="flex items-center justify-center gap-1.5 mb-1">
@@ -51,7 +51,7 @@
           </div>
           <p id="live-handle" class="text-xs text-slate-500 dark:text-slate-400 font-medium mb-3">@cassiopeia.ux</p>
 
-          <!-- Enhanced Social & Theme Row (Visually Appealing) -->
+          <!-- Social & Theme Row -->
           <div class="flex items-center justify-center gap-2.5 mb-6">
             <!-- GitHub -->
             <a href="https://github.com/cassiepeia" target="_blank" rel="noreferrer" 
@@ -101,11 +101,9 @@
                     class="group relative w-10 h-10 rounded-2xl bg-white/80 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 shadow-xs hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 hover:border-amber-300 dark:hover:border-amber-500/50 flex items-center justify-center transition-all duration-200" 
                     title="Toggle Dark/Light Mode">
               <div class="absolute inset-0 rounded-2xl bg-amber-500/5 dark:bg-amber-400/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              <!-- Moon Icon (Light Mode) -->
               <svg id="theme-icon-moon" class="w-4 h-4 text-slate-600 group-hover:text-amber-500 transition-colors block dark:hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
               </svg>
-              <!-- Sun Icon (Dark Mode) -->
               <svg id="theme-icon-sun" class="w-4 h-4 text-slate-400 group-hover:text-amber-400 transition-colors hidden dark:block" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <circle cx="12" cy="12" r="5"/>
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
@@ -182,7 +180,6 @@
                 <span class="text-xs font-semibold text-slate-700 dark:text-slate-300">Tools I work with</span>
               </div>
               <div class="flex-1 overflow-x-auto no-scrollbar flex items-center gap-2 py-1">
-                <!-- Tool Pills -->
                 <div class="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-cream-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 text-xs font-medium">
                   <span class="w-2 h-2 rounded-full bg-rose-500"></span> Figma
                 </div>
@@ -212,7 +209,7 @@
         <!-- BENTO MODULAR CARDS GRID -->
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 
-          <!-- CARD 1: PROJECTS WITH 3D PAGE CAROUSEL (Col-span 2 on large) -->
+          <!-- CARD 1: PROJECTS WITH 3D PAGE CAROUSEL -->
           <div id="card-projects" class="md:col-span-2 backdrop-blur-md bg-white/75 dark:bg-charcoal-800/80 border border-slate-200/80 dark:border-slate-700/80 rounded-3xl p-6 shadow-bento hover:shadow-bento-hover transition-all flex flex-col justify-between">
             <div>
               <div class="flex items-center justify-between mb-4">
@@ -226,7 +223,7 @@
                   </div>
                 </div>
 
-                <!-- Carousel Slide Indicators & Controls -->
+                <!-- Carousel Controls -->
                 <div class="flex items-center gap-1.5">
                   <button id="carousel-prev" class="w-8 h-8 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-700 transition" aria-label="Previous Slide">
                     <i data-lucide="chevron-left" class="w-4 h-4"></i>
@@ -240,8 +237,6 @@
 
               <!-- 3D CAROUSEL CONTAINER -->
               <div class="relative w-full h-[280px] sm:h-[310px] rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 text-white overflow-hidden p-6 flex flex-col justify-between shadow-inner perspective-1000">
-                
-                <!-- Background mock vector graphics -->
                 <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-accent-orange/15 rounded-full blur-3xl pointer-events-none"></div>
                 <div class="absolute right-10 top-6 w-48 h-48 bg-blue-500/10 rounded-full blur-2xl pointer-events-none"></div>
 
@@ -257,9 +252,9 @@
                     <span class="px-2.5 py-1 rounded-md bg-white/10 text-white/90 font-medium">e-KYC Flow</span>
                     <span class="px-2.5 py-1 rounded-md bg-white/10 text-white/90 font-medium">Figma</span>
                   </div>
-                  <button onclick="previewProjectDetails()" class="text-xs text-accent-orange hover:text-orange-400 font-semibold flex items-center gap-1 group">
-                    <span>Inspect Case Study</span>
-                    <i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"></i>
+                  <button type="button" onclick="previewProjectDetails(currentSlide)" class="relative z-30 cursor-pointer text-xs text-accent-orange hover:text-orange-400 font-semibold flex items-center gap-1 group">
+                    <span class="pointer-events-none">Inspect Case Study</span>
+                    <i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform pointer-events-none"></i>
                   </button>
                 </div>
               </div>
@@ -296,7 +291,7 @@
                     <div class="w-7 h-7 rounded-full bg-accent-orange/20 text-accent-orange flex items-center justify-center text-xs font-bold">CO</div>
                     <div class="leading-tight">
                       <p class="text-xs font-bold text-slate-800 dark:text-white">BSIT Graduate</p>
-                      <p class="text-[10px] text-slate-500">Tech + Human Empathy</p>
+                      <p class="text-[10px] text-slate-500">Class of 2025 Dean's Lister</p>
                     </div>
                   </div>
                   <div class="flex items-center justify-between text-[10px] text-slate-500 pt-2 border-t border-slate-200/50 dark:border-slate-700/50">
@@ -307,7 +302,7 @@
               </div>
 
               <p id="live-about-bio" class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                Bridging software systems and user experience. Proficient in transforming ambiguous requirements into clean, validated interactive prototypes and scalable design components.
+                Technology is often intimidating; good design makes it welcoming. I design products that respect a person’s time, attention, and sanity—from the very first tap to the last.
               </p>
             </div>
 
@@ -329,7 +324,6 @@
               </div>
             </div>
 
-            <!-- Tag Pills Grid -->
             <div class="flex flex-wrap gap-2 my-4">
               <div class="px-3 py-1.5 rounded-xl bg-cream-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 text-xs font-medium text-slate-700 dark:text-slate-300 flex items-center gap-1.5 hover:border-accent-orange transition cursor-default">
                 <i data-lucide="layers" class="w-3 h-3 text-accent-orange"></i> Design Systems
@@ -344,7 +338,7 @@
                 <i data-lucide="activity" class="w-3 h-3 text-emerald-500"></i> Micro-Interactions
               </div>
               <div class="px-3 py-1.5 rounded-xl bg-cream-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 text-xs font-medium text-slate-700 dark:text-slate-300 flex items-center gap-1.5 hover:border-amber-500 transition cursor-default">
-                <i data-lucide="check-circle" class="w-3 h-3 text-amber-500"></i> WCAG Accessibility
+                <i data-lucide="check-circle" class="w-3.5 h-3.5 text-amber-500"></i> WCAG Accessibility
               </div>
               <div class="px-3 py-1.5 rounded-xl bg-cream-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 text-xs font-medium text-slate-700 dark:text-slate-300 flex items-center gap-1.5 hover:border-rose-500 transition cursor-default">
                 <i data-lucide="search" class="w-3 h-3 text-rose-500"></i> Heuristic Audits
@@ -357,7 +351,7 @@
             </div>
           </div>
 
-          <!-- CARD 4: CREDENTIALS (With Google UX Design Badge) -->
+          <!-- CARD 4: CREDENTIALS -->
           <div id="card-credentials" class="backdrop-blur-md bg-white/75 dark:bg-charcoal-800/80 border border-slate-200/80 dark:border-slate-700/80 rounded-3xl p-6 shadow-bento hover:shadow-bento-hover transition-all flex flex-col justify-between">
             <div>
               <div class="flex items-center gap-2 mb-3">
@@ -370,31 +364,70 @@
                 </div>
               </div>
 
-              <!-- Certificate Emblem / Badge Container -->
-              <div class="my-3 p-4 rounded-2xl bg-cream-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 flex items-center gap-4 cursor-pointer hover:border-blue-400 transition" onclick="openCertModal('google')">
-                <div class="w-14 h-14 shrink-0 rounded-2xl bg-gradient-to-tr from-blue-600 via-emerald-500 to-amber-500 p-0.5 shadow-md flex items-center justify-center">
-                  <div class="w-full h-full bg-white dark:bg-charcoal-800 rounded-[14px] flex flex-col items-center justify-center p-1">
-                    <span class="text-xs font-black tracking-tighter text-blue-600">Google</span>
-                    <span class="text-[8px] font-bold uppercase text-slate-500">UX Design</span>
+              <!-- Certificate List Container -->
+              <div class="space-y-2.5 my-3">
+                <!-- 1. Google UX Design -->
+                <div class="p-3 rounded-2xl bg-cream-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 flex items-center gap-3.5 cursor-pointer hover:border-blue-400 transition" onclick="openCertModal('google')">
+                  <div class="w-12 h-12 shrink-0 rounded-xl bg-white dark:bg-slate-800 p-1 border border-slate-200/70 dark:border-slate-700 shadow-xs flex items-center justify-center overflow-hidden">
+                    <img 
+                      src="google-ux-design-professional-certificate-v-3.png" 
+                      alt="Google UX Design Badge" 
+                      class="w-full h-full object-contain"
+                    />
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <span class="inline-flex items-center gap-1 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 mb-0.5">
+                      <i data-lucide="shield-check" class="w-2.5 h-2.5"></i> 8 Courses Completed
+                    </span>
+                    <h4 class="text-xs font-bold text-slate-900 dark:text-white truncate">Google UX Design Professional</h4>
                   </div>
                 </div>
-                <div class="flex-1 min-w-0">
-                  <span class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 mb-1">
-                    <i data-lucide="shield-check" class="w-3 h-3"></i> 8 Courses Completed
-                  </span>
-                  <h4 class="text-xs font-bold text-slate-900 dark:text-white truncate">Google UX Design Professional</h4>
-                  <p class="text-[11px] text-slate-500">Issued Oct 15, 2026 · Coursera</p>
+
+                <!-- 2. Generative AI for UI UX Design -->
+                <div class="p-3 rounded-2xl bg-cream-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 flex items-center gap-3.5 cursor-pointer hover:border-purple-400 transition" onclick="openCertModal('genai')">
+                  <div class="w-12 h-12 shrink-0 rounded-xl bg-white dark:bg-slate-800 p-1 border border-slate-200/70 dark:border-slate-700 shadow-xs flex items-center justify-center overflow-hidden">
+                    <img 
+                      src="generative-ai-for-ui-ux-design-specialization.png" 
+                      alt="Generative AI for UI UX Design Badge" 
+                      class="w-full h-full object-contain"
+                    />
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <span class="inline-flex items-center gap-1 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 mb-0.5">
+                      <i data-lucide="shield-check" class="w-2.5 h-2.5"></i> 3 Courses Completed
+                    </span>
+                    <h4 class="text-xs font-bold text-slate-900 dark:text-white truncate">Generative AI for UI UX Design</h4>
+                    <p class="text-[10px] text-slate-500 truncate">AI Workflows & Prompt Systems</p>
+                  </div>
+                </div>
+
+                <!-- 3. Professional Figma UI / UX Design -->
+                <div class="p-3 rounded-2xl bg-cream-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 flex items-center gap-3.5 cursor-pointer hover:border-rose-400 transition" onclick="openCertModal('figma')">
+                  <div class="w-12 h-12 shrink-0 rounded-xl bg-white dark:bg-slate-800 p-1 border border-slate-200/70 dark:border-slate-700 shadow-xs flex items-center justify-center overflow-hidden">
+                    <img 
+                      src="badge-figma.png" 
+                      alt="Professional Figma UI UX Design Badge" 
+                      class="w-full h-full object-contain"
+                    />
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <span class="inline-flex items-center gap-1 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300 mb-0.5">
+                      <i data-lucide="shield-check" class="w-2.5 h-2.5"></i> 4 Courses Completed
+                    </span>
+                    <h4 class="text-xs font-bold text-slate-900 dark:text-white truncate">Professional Figma UI / UX Design</h4>
+                    <p class="text-[10px] text-slate-500 truncate">Component Systems & Auto-Layout</p>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <button onclick="openCertModal('google')" class="mt-4 w-full py-2 px-3 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-medium text-xs flex items-center justify-center gap-1.5 shadow-xs transition hover:opacity-90">
+            <button onclick="openCertModal('google')" class="mt-2 w-full py-2 px-3 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-medium text-xs flex items-center justify-center gap-1.5 shadow-xs transition hover:opacity-90">
               <i data-lucide="check-circle" class="w-3.5 h-3.5 text-blue-400 dark:text-blue-600"></i>
               Verify Credentials Online
             </button>
           </div>
 
-          <!-- CARD 5: SERVICES (Numbered List 01-05) -->
+          <!-- CARD 5: SERVICES -->
           <div id="card-services" class="backdrop-blur-md bg-white/75 dark:bg-charcoal-800/80 border border-slate-200/80 dark:border-slate-700/80 rounded-3xl p-6 shadow-bento hover:shadow-bento-hover transition-all flex flex-col justify-between">
             <div>
               <div class="flex items-center gap-2 mb-3">
@@ -408,7 +441,6 @@
               </div>
 
               <div class="space-y-2 mt-4" id="services-list-container">
-                <!-- Service Items -->
                 <div class="flex items-center justify-between p-2.5 rounded-xl hover:bg-cream-50 dark:hover:bg-slate-700/40 transition group cursor-default">
                   <div class="flex items-center gap-3">
                     <span class="text-[11px] font-mono font-bold text-accent-orange">01</span>
@@ -416,7 +448,6 @@
                   </div>
                   <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-400 group-hover:text-accent-orange transition"></i>
                 </div>
-
                 <div class="flex items-center justify-between p-2.5 rounded-xl hover:bg-cream-50 dark:hover:bg-slate-700/40 transition group cursor-default">
                   <div class="flex items-center gap-3">
                     <span class="text-[11px] font-mono font-bold text-accent-orange">02</span>
@@ -424,7 +455,6 @@
                   </div>
                   <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-400 group-hover:text-accent-orange transition"></i>
                 </div>
-
                 <div class="flex items-center justify-between p-2.5 rounded-xl hover:bg-cream-50 dark:hover:bg-slate-700/40 transition group cursor-default">
                   <div class="flex items-center gap-3">
                     <span class="text-[11px] font-mono font-bold text-accent-orange">03</span>
@@ -432,7 +462,6 @@
                   </div>
                   <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-400 group-hover:text-accent-orange transition"></i>
                 </div>
-
                 <div class="flex items-center justify-between p-2.5 rounded-xl hover:bg-cream-50 dark:hover:bg-slate-700/40 transition group cursor-default">
                   <div class="flex items-center gap-3">
                     <span class="text-[11px] font-mono font-bold text-accent-orange">04</span>
@@ -440,7 +469,6 @@
                   </div>
                   <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-400 group-hover:text-accent-orange transition"></i>
                 </div>
-
                 <div class="flex items-center justify-between p-2.5 rounded-xl hover:bg-cream-50 dark:hover:bg-slate-700/40 transition group cursor-default">
                   <div class="flex items-center gap-3">
                     <span class="text-[11px] font-mono font-bold text-accent-orange">05</span>
@@ -469,132 +497,482 @@
   <!-- ========================================================================= -->
   <div id="cert-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
     <div class="bg-white dark:bg-charcoal-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-700 relative animate-in fade-in zoom-in-95 duration-200">
-      
-      <button onclick="closeCertModal()" class="absolute top-5 right-5 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500">
+      <button onclick="closeCertModal()" class="absolute top-5 right-5 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500" aria-label="Close credentials modal">
         <i data-lucide="x" class="w-5 h-5"></i>
       </button>
-
-      <div id="cert-modal-content">
-        <!-- Rendered via JS depending on certificate clicked -->
-      </div>
+      <div id="cert-modal-content"></div>
     </div>
   </div>
 
   <!-- ========================================================================= -->
-  <!-- MODAL 2: CASE STUDY PREVIEW MODAL -->
+  <!-- MODAL 2: CASE STUDY PREVIEW MODAL (EXACT VIDEO & SCREENSHOT FORMAT) -->
   <!-- ========================================================================= -->
-  <div id="project-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
-    <div class="bg-white dark:bg-charcoal-800 rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl border border-slate-200 dark:border-slate-700 relative max-h-[90vh] overflow-y-auto">
+  <div id="project-modal" class="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-md hidden items-center justify-center p-3 sm:p-5">
+    <div class="bg-white dark:bg-charcoal-800 rounded-3xl max-w-4xl w-full p-6 sm:p-10 shadow-2xl border border-slate-200/80 dark:border-slate-700/80 relative max-h-[92vh] overflow-y-auto font-sans">
       
-      <button onclick="closeProjectModal()" class="absolute top-5 right-5 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500">
+      <!-- Sticky Close Button -->
+      <button onclick="closeProjectModal()" class="sticky top-0 float-right -mr-2 -mt-2 p-2.5 rounded-full bg-cream-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-500 hover:text-slate-900 dark:text-slate-300 transition z-30 shadow-xs" aria-label="Close Case Study">
         <i data-lucide="x" class="w-5 h-5"></i>
       </button>
 
-      <div class="space-y-5">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-100 dark:bg-orange-950 text-accent-orange text-xs font-bold">
-          <i data-lucide="layers" class="w-3.5 h-3.5"></i> Comprehensive UI/UX Case Study
-        </div>
-        <h2 class="font-display font-extrabold text-2xl sm:text-3xl text-slate-900 dark:text-white">
-          HIRAYA BANK — Mobile App User Flow
-        </h2>
+      <div class="space-y-12">
+        
+        <!-- 1. HERO BANNER & PROJECT TITLE -->
+        <header class="relative space-y-6 overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 p-6 sm:p-8 text-white border border-slate-700/80 shadow-xl">
+          <!-- Ambient Glows -->
+          <div class="absolute -top-16 -right-16 w-64 h-64 bg-accent-orange/20 rounded-full blur-3xl pointer-events-none"></div>
+          <div class="absolute -bottom-16 -left-16 w-64 h-64 bg-blue-500/15 rounded-full blur-3xl pointer-events-none"></div>
 
-        <!-- Interactive Prototype Mockup Canvas -->
-        <div class="p-6 rounded-2xl bg-slate-900 text-slate-100 border border-slate-800 space-y-4">
-          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-            <span class="text-xs font-mono text-emerald-400 flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Live Wireframe Simulation
-            </span>
-            <span class="text-xs text-slate-400">8 Screen Journey</span>
+          <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div class="space-y-3 max-w-xl text-left">
+              <div id="modal-badge" class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/20 border border-orange-500/30 text-accent-orange text-xs font-bold uppercase tracking-wider font-mono">
+                01 Fintech Onboarding
+              </div>
+              
+              <h1 id="modal-title" class="font-display font-extrabold text-2xl sm:text-4xl text-white tracking-tight leading-tight">
+                HIRAYA BANK — Onboarding & e-KYC
+              </h1>
+              
+              <p id="modal-tagline" class="text-xs sm:text-sm text-slate-300 font-medium leading-relaxed">
+                What's your end-game? Seamless Mobile Banking & Guided e-KYC Onboarding
+              </p>
+
+              <!-- METADATA CHIPS -->
+              <div class="pt-2 flex flex-wrap items-center gap-2 text-xs">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/10 border border-white/10 font-medium text-slate-200">
+                  <i data-lucide="briefcase" class="w-3.5 h-3.5 text-accent-orange"></i>
+                  <span id="modal-client">Google Career Capstone</span>
+                </span>
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/10 border border-white/10 font-medium text-slate-200">
+                  <i data-lucide="clock" class="w-3.5 h-3.5 text-accent-orange"></i>
+                  <span id="modal-duration">7 months</span>
+                </span>
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/10 border border-white/10 font-medium text-slate-200">
+                  <i data-lucide="calendar" class="w-3.5 h-3.5 text-accent-orange"></i>
+                  <span id="modal-date">February 2024</span>
+                </span>
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/10 border border-white/10 font-medium text-slate-200">
+                  <i data-lucide="user-check" class="w-3.5 h-3.5 text-accent-orange"></i>
+                  <span id="modal-role">UX Lead & Interaction Designer</span>
+                </span>
+              </div>
+            </div>
+
+            <!-- HERO THUMBNAIL PREVIEW -->
+            <div class="shrink-0 flex items-center justify-center">
+              <div class="w-52 h-44 sm:w-60 sm:h-52 rounded-2xl bg-slate-900/90 border border-slate-700/80 p-3 shadow-2xl relative overflow-hidden flex flex-col justify-between group hover:border-accent-orange/60 transition-colors">
+                <div class="flex items-center justify-between text-[8px] font-mono text-slate-400 border-b border-slate-800 pb-1.5">
+                  <span class="flex items-center gap-1 text-accent-orange font-bold">
+                    <span class="w-1.5 h-1.5 rounded-full bg-accent-orange animate-ping"></span> Live Case Study
+                  </span>
+                  <span id="modal-hero-version">v2.4 Prototype</span>
+                </div>
+                
+                <div id="modal-hero-mockup" class="flex items-center justify-center gap-2 py-2">
+                  <!-- Dynamically populated via JS -->
+                </div>
+
+                <div id="modal-hero-device" class="text-[9px] text-center text-slate-400 font-mono tracking-tight">
+                  Mobile Viewport • 390 × 844 px
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- 2. PROJECT VISION & CHALLENGES -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-8 border-t border-slate-100 dark:border-slate-800 pt-8">
+          <div class="space-y-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Project Vision
+            </h3>
+            <p id="modal-vision" class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+              <!-- Dynamically populated -->
+            </p>
           </div>
 
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center text-xs">
-            <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700">
-              <span class="text-[10px] text-accent-orange font-bold block mb-1">01 Empathize</span>
-              <span>15 User Interviews</span>
+          <div class="space-y-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Challenges
+            </h3>
+            <ol id="modal-challenges" class="space-y-2 text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+              <!-- Dynamically populated -->
+            </ol>
+          </div>
+        </section>
+
+        <!-- 3. KICKOFF: RESEARCH QUESTIONS -->
+        <section class="space-y-5 border-t border-slate-100 dark:border-slate-800 pt-8">
+          <div class="space-y-1">
+            <h3 class="font-display font-bold text-xl text-slate-900 dark:text-white">
+              Kickoff
+            </h3>
+            <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl">
+              In this project, we took a goal-directed design approach that proved to be quite effective in our design efforts. We found qualitative research methods to be the most useful, consisting of a kickoff meeting, competitive analysis, stakeholder interviews, and hypothesis construction. We started out by asking ourselves initial key questions:
+            </p>
+          </div>
+
+          <div id="modal-questions" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-2">
+            <!-- Dynamically populated -->
+          </div>
+        </section>
+
+        <!-- 4. MEET THE USERS: PERSONAS -->
+        <section class="space-y-5 border-t border-slate-100 dark:border-slate-800 pt-8">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <h3 class="font-display font-bold text-xl text-slate-900 dark:text-white">
+                Meet the Users
+              </h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400">
+                Primary, secondary, and supplementary user archetypes synthesized from qualitative interviews.
+              </p>
             </div>
-            <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700">
-              <span class="text-[10px] text-blue-400 font-bold block mb-1">02 Define</span>
-              <span>3 Core Personas</span>
-            </div>
-            <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700">
-              <span class="text-[10px] text-emerald-400 font-bold block mb-1">03 Ideate</span>
-              <span>e-KYC Flows</span>
-            </div>
-            <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700">
-              <span class="text-[10px] text-purple-400 font-bold block mb-1">04 Test</span>
-              <span>85% Usability Score</span>
+
+            <div class="inline-flex p-1 rounded-xl bg-cream-200/70 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs">
+              <button type="button" onclick="switchPersona(0)" id="persona-tab-0" class="persona-tab px-3 py-1 rounded-lg font-bold bg-white dark:bg-charcoal-800 text-slate-900 dark:text-white shadow-2xs transition">
+                1. College Student
+              </button>
+              <button type="button" onclick="switchPersona(1)" id="persona-tab-1" class="persona-tab px-3 py-1 rounded-lg font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition">
+                2. Remote Freelancer
+              </button>
+              <button type="button" onclick="switchPersona(2)" id="persona-tab-2" class="persona-tab px-3 py-1 rounded-lg font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition">
+                3. MSME Merchant
+              </button>
             </div>
           </div>
-        </div>
 
-        <div class="space-y-3 text-xs sm:text-sm text-slate-600 dark:text-slate-300">
-          <h4 class="font-bold text-slate-900 dark:text-white">The Challenge & Problem:</h4>
-          <p>
-            Users frequently abandoned traditional banking registration because of cumbersome manual identity validation and disjointed authentication feedback loops.
+          <div class="p-5 sm:p-7 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-700/80 shadow-xs">
+            <div class="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
+              
+              <div class="w-full lg:w-48 shrink-0 flex flex-col items-center lg:items-start text-center lg:text-left">
+                <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-blue-600/10 dark:bg-blue-500/20 flex flex-col items-center justify-end overflow-hidden mb-3 border border-blue-500/20">
+                  <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-600 dark:bg-blue-500 mb-1"></div>
+                  <div class="w-20 h-9 sm:w-24 sm:h-10 rounded-t-full bg-blue-600 dark:bg-blue-500"></div>
+                </div>
+
+                <h4 id="persona-role" class="font-display font-bold text-lg sm:text-xl text-blue-600 dark:text-blue-400 mb-2">
+                  College Student
+                </h4>
+
+                <div id="persona-demographics" class="space-y-1 text-xs text-slate-700 dark:text-slate-300">
+                  <!-- Dynamically populated -->
+                </div>
+              </div>
+
+              <div class="flex-1 space-y-4 w-full">
+                <p id="persona-quote" class="italic text-xs sm:text-sm text-slate-800 dark:text-slate-200 text-center font-serif leading-relaxed px-2">
+                  <!-- Dynamically populated -->
+                </p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 pt-1">
+                  <div class="space-y-2">
+                    <h5 class="font-display font-bold text-sm text-emerald-600 dark:text-emerald-400">Goals</h5>
+                    <ul id="persona-goals" class="space-y-1.5 text-xs text-slate-600 dark:text-slate-300 list-disc list-outside pl-4 leading-relaxed">
+                      <!-- Dynamically populated -->
+                    </ul>
+                  </div>
+
+                  <div class="space-y-2">
+                    <h5 class="font-display font-bold text-sm text-red-600 dark:text-rose-400">Frustrations</h5>
+                    <ul id="persona-frustrations" class="space-y-1.5 text-xs text-slate-600 dark:text-slate-300 list-disc list-outside pl-4 leading-relaxed">
+                      <!-- Dynamically populated -->
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="p-3.5 sm:p-4 rounded-xl border-2 border-amber-400 dark:border-amber-500/80 bg-amber-50/40 dark:bg-amber-950/20 text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
+                  <p id="persona-scenario">
+                    <!-- Dynamically populated -->
+                  </p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. COMPETITIVE ANALYSIS -->
+        <section class="space-y-4 border-t border-slate-100 dark:border-slate-800 pt-8">
+          <h3 class="font-display font-bold text-xl text-slate-900 dark:text-white">
+            Competitive Analysis
+          </h3>
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl">
+            We looked at several potential competing digital banks and traditional fintech apps. The majority of the features between competitors were very similar; however, the main differences we noticed were:
           </p>
 
-          <h4 class="font-bold text-slate-900 dark:text-white">The Solution:</h4>
-          <p>
-            A streamlined 3-step registration flow integrating real-time camera alignment guides for ID scanning, haptic feedback, and a personalized visual dashboard showing instant balance visibility.
-          </p>
-        </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+            <div class="p-3.5 rounded-xl bg-cream-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+              <span class="font-bold text-slate-900 dark:text-white block mb-1">Accessibility</span>
+              <span class="text-slate-500">Easily Accessible vs. Hardly Accessible onboarding</span>
+            </div>
+            <div class="p-3.5 rounded-xl bg-cream-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+              <span class="font-bold text-slate-900 dark:text-white block mb-1">Interactions</span>
+              <span class="text-slate-500">Too Many Screens vs. Simplified Linear Interaction</span>
+            </div>
+            <div class="p-3.5 rounded-xl bg-cream-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+              <span class="font-bold text-slate-900 dark:text-white block mb-1">Interface Focus</span>
+              <span class="text-slate-500">Distracting Graphics vs. Minimalist Financial UI</span>
+            </div>
+            <div class="p-3.5 rounded-xl bg-cream-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+              <span class="font-bold text-slate-900 dark:text-white block mb-1">Verification</span>
+              <span class="text-slate-500">Multi-day approval vs. Instant Biometric e-KYC</span>
+            </div>
+          </div>
+        </section>
 
-        <div class="pt-4 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between">
-          <span class="text-xs text-slate-400">Designed in Figma by Cassiopeia</span>
-          <button onclick="closeProjectModal()" class="px-4 py-2 rounded-xl bg-accent-orange text-white text-xs font-semibold">
-            Done Reviewing
+        <!-- 6. INFORMATION ARCHITECTURE & USER FLOW -->
+        <section class="space-y-4 border-t border-slate-100 dark:border-slate-800 pt-8">
+          <div class="space-y-1">
+            <h3 class="font-display font-bold text-xl text-slate-900 dark:text-white">
+              Preparing the Journey
+            </h3>
+            <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl">
+              We constructed a user flow of what a basic start-to-finish journey looks like when registering and authenticating in the app. This helped us understand ways users can interact with the product, as well as navigate through primary and secondary user goals:
+            </p>
+          </div>
+
+          <div class="rounded-2xl border border-slate-200/80 dark:border-slate-700/80 bg-cream-50 dark:bg-slate-900/40 p-4 overflow-hidden">
+            <div class="w-full rounded-xl overflow-hidden bg-white dark:bg-slate-950 border border-slate-200/60 dark:border-slate-800 flex items-center justify-center min-h-[220px]">
+              <img 
+                id="modal-flow-img"
+                src="user-flow-diagram.png" 
+                alt="Flow Diagram" 
+                class="w-full h-auto max-h-[440px] object-contain transition-transform duration-300 hover:scale-[1.01]"
+              />
+            </div>
+            <div class="mt-3 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 px-1">
+              <span id="modal-flow-desc">Primary Goals: Authentication & Verification • Secondary Goals: Dashboard Navigation</span>
+              <a id="modal-flow-link" href="user-flow-diagram.png" target="_blank" class="hover:text-accent-orange font-semibold flex items-center gap-1 transition">
+                <span>View Full Resolution</span>
+                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <!-- 7. PAPER WIREFRAMES & WIREFLOW -->
+        <section class="space-y-4 border-t border-slate-100 dark:border-slate-800 pt-8">
+          <div class="space-y-1">
+            <h3 class="font-display font-bold text-xl text-slate-900 dark:text-white">
+              Paper Wireframes & Wireflow
+            </h3>
+            <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl">
+              After sketching out initial paper wireframes and thinking through the preliminary flow, we reviewed what was necessary, unnecessary, and what areas needed ergonomic improvement before moving into the digital visuals.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="p-4 rounded-2xl bg-cream-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-3">
+              <span class="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <i data-lucide="edit-3" class="w-4 h-4 text-amber-500"></i>
+                Rapid Paper Sketches
+              </span>
+              <p class="text-xs text-slate-500 leading-relaxed">
+                Sketched 8 variations of the camera viewfinder to establish one-handed thumb-zone reachability on 6.1" and 6.7" mobile devices.
+              </p>
+              <div class="h-32 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl flex items-center justify-center text-xs text-slate-400 italic">
+                Photo of Paper Wireframes (Crazy 8s)
+              </div>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-cream-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-3">
+              <span class="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <i data-lucide="layout" class="w-4 h-4 text-blue-500"></i>
+                Grayscale Wireflow
+              </span>
+              <p class="text-xs text-slate-500 leading-relaxed">
+                Assembled connected low-fidelity frames in Figma to test screen-to-screen logic with 5 unmoderated test participants.
+              </p>
+              <div class="h-32 border-2 border-slate-300 dark:border-slate-700 rounded-xl bg-slate-100 dark:bg-slate-800/60 flex items-center justify-center text-xs text-slate-500 font-mono">
+                [Low-Fi Wireflow Connected Frames]
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 8. USABILITY STUDY & ITERATION -->
+        <section class="space-y-4 border-t border-slate-100 dark:border-slate-800 pt-8">
+          <div class="space-y-1">
+            <h3 class="font-display font-bold text-xl text-slate-900 dark:text-white">
+              Iteration Based on Usability Studies
+            </h3>
+            <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl">
+              After creating our prototype from low-fidelity wireframes, our team prepared a test protocol and conducted usability testing sessions. We asked participants to run through key scenarios in our prototype in hopes of garnering enough feedback for our next set of iterations:
+            </p>
+          </div>
+
+          <div id="modal-usability-cards" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 pt-1">
+            <!-- Dynamically populated -->
+          </div>
+        </section>
+
+        <!-- 9. STYLE GUIDE -->
+        <section class="space-y-4 border-t border-slate-100 dark:border-slate-800 pt-8">
+          <div class="space-y-1">
+            <h3 class="font-display font-bold text-xl text-slate-900 dark:text-white">
+              Style Guide & UI Sticker Sheet
+            </h3>
+            <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl">
+              Combining warm, inviting tones to create the signature aesthetic while maintaining accessibility and contrast compliance:
+            </p>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-cream-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 space-y-5">
+            <div>
+              <span class="text-[10px] font-mono uppercase font-bold text-slate-400 block mb-2">Color Palette</span>
+              <div class="flex flex-wrap items-center gap-3">
+                <div class="flex items-center gap-2">
+                  <span class="w-6 h-6 rounded-lg bg-[#E76F51] shadow-xs"></span>
+                  <span class="text-xs font-mono font-medium">#E76F51</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="w-6 h-6 rounded-lg bg-[#2563EB] shadow-xs"></span>
+                  <span class="text-xs font-mono font-medium">#2563EB</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="w-6 h-6 rounded-lg bg-[#10B981] shadow-xs"></span>
+                  <span class="text-xs font-mono font-medium">#10B981</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="w-6 h-6 rounded-lg bg-[#11151B] shadow-xs"></span>
+                  <span class="text-xs font-mono font-medium">#11151B</span>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <span class="text-[10px] font-mono uppercase font-bold text-slate-400 block mb-2">Button Component Tokens</span>
+              <div class="flex flex-wrap items-center gap-3">
+                <button class="px-5 py-2 rounded-xl bg-accent-orange text-white text-xs font-bold shadow-xs">
+                  Large Button
+                </button>
+                <button class="px-3 py-1.5 rounded-lg bg-accent-orange text-white text-[11px] font-bold">
+                  Small Button
+                </button>
+                <button class="px-4 py-2 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-xs font-bold">
+                  Normal
+                </button>
+                <button class="px-4 py-2 rounded-xl bg-orange-700 text-white text-xs font-bold shadow-inner">
+                  Pressed State
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 10. FINAL DESIGNS & PROTOTYPE -->
+        <section class="space-y-6 border-t border-slate-100 dark:border-slate-800 pt-8">
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+            <div class="space-y-1">
+              <h3 class="font-display font-bold text-xl text-slate-900 dark:text-white">
+                Final Designs & High-Fidelity Prototype
+              </h3>
+              <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl">
+                Browse through core interactive screen states—from live camera OCR capture to credential processing and final activation:
+              </p>
+            </div>
+
+            <!-- Carousel Controls -->
+            <div class="flex items-center gap-2 self-start sm:self-auto">
+              <button type="button" onclick="prevScreenSlide()" class="w-8 h-8 rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition" aria-label="Previous Screen">
+                <i data-lucide="chevron-left" class="w-4 h-4"></i>
+              </button>
+              <span id="screen-counter" class="text-xs font-mono font-medium text-slate-500 px-1">1 / 4</span>
+              <button type="button" onclick="nextScreenSlide()" class="w-8 h-8 rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition" aria-label="Next Screen">
+                <i data-lucide="chevron-right" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Carousel Stage Container -->
+          <div class="p-6 sm:p-8 rounded-2xl bg-slate-900 text-white border border-slate-800 shadow-xl relative overflow-hidden">
+            <div id="final-screen-slide" class="flex flex-col md:flex-row items-center gap-8 transition-all duration-300">
+              <!-- Dynamically rendered via renderScreenSlide() -->
+            </div>
+
+            <!-- Slide Indicators -->
+            <div id="screen-dots" class="flex items-center justify-center gap-2 mt-6 pt-4 border-t border-slate-800/80">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+        </section>
+
+        <!-- 11. TAKEAWAYS & PROCESS DECK -->
+        <section class="space-y-4 border-t border-slate-100 dark:border-slate-800 pt-8 text-center max-w-2xl mx-auto">
+          <h3 class="font-display font-bold text-2xl text-slate-900 dark:text-white">
+            Takeaways
+          </h3>
+          <p id="modal-takeaways" class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+            <!-- Dynamically populated -->
+          </p>
+
+          <div class="pt-4">
+            <a id="modal-deck-link" href="#" target="_blank" rel="noreferrer" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-accent-orange hover:bg-orange-600 text-white font-semibold text-xs tracking-wider uppercase transition shadow-md hover:shadow-lg">
+              <span>Process Deck</span>
+              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+          </div>
+        </section>
+
+        <!-- MODAL FOOTER CLOSE BAR -->
+        <footer class="pt-6 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-400">
+          <span>Case study by Cassiopeia Obelidor</span>
+          <button onclick="closeProjectModal()" class="px-4 py-2 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-semibold text-xs hover:opacity-90 transition">
+            Close Case Study
           </button>
-        </div>
+        </footer>
+
       </div>
     </div>
   </div>
 
   <!-- ========================================================================= -->
-<!-- MODAL 3: CONTACT FORM MODAL -->
-<!-- ========================================================================= -->
-<div id="contact-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
-  <div class="bg-white dark:bg-charcoal-800 rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-700 relative">
-    <button onclick="closeContactModal()" class="absolute top-5 right-5 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500">
-      <i data-lucide="x" class="w-5 h-5"></i>
-    </button>
+  <!-- MODAL 3: CONTACT FORM MODAL -->
+  <!-- ========================================================================= -->
+  <div id="contact-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white dark:bg-charcoal-800 rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-700 relative">
+      <button onclick="closeContactModal()" class="absolute top-5 right-5 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500" aria-label="Close contact modal">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
 
-    <div class="space-y-4">
-      <div class="flex items-center gap-3">
-        <div class="p-3 rounded-2xl bg-orange-100 dark:bg-orange-950 text-accent-orange">
-          <i data-lucide="send" class="w-5 h-5"></i>
+      <div class="space-y-4">
+        <div class="flex items-center gap-3">
+          <div class="p-3 rounded-2xl bg-orange-100 dark:bg-orange-950 text-accent-orange">
+            <i data-lucide="send" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">Get in touch</h3>
+            <p class="text-xs text-slate-500">Let's discuss UI/UX projects or full-time roles.</p>
+          </div>
         </div>
-        <div>
-          <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">Get in touch</h3>
-          <p class="text-xs text-slate-500">Let's discuss UI/UX projects or full-time roles.</p>
-        </div>
+
+        <form id="contact-form" class="space-y-3" onsubmit="handleContactSubmit(event)">
+          <div>
+            <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Your Name</label>
+            <input type="text" name="name" required placeholder="e.g. Alex Reyes" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-cream-50 dark:bg-slate-900 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-accent-orange">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Email Address</label>
+            <input type="email" name="email" required placeholder="alex@company.com" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-cream-50 dark:bg-slate-900 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-accent-orange">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Message</label>
+            <textarea name="message" rows="3" required placeholder="Tell me about your product or role..." class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-cream-50 dark:bg-slate-900 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-accent-orange"></textarea>
+          </div>
+
+          <div id="contact-feedback" class="hidden p-2.5 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 text-xs font-medium text-center">
+            Message sent! Cassiopeia will reach out promptly.
+          </div>
+
+          <button id="contact-submit-btn" type="submit" class="w-full py-2.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-semibold text-xs flex items-center justify-center gap-2 hover:opacity-90 transition">
+            <span>Send Message</span>
+            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+          </button>
+        </form>
       </div>
-
-      <form id="contact-form" class="space-y-3" onsubmit="handleContactSubmit(event)">
-        <div>
-          <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Your Name</label>
-          <input type="text" name="name" required placeholder="e.g. Alex Reyes" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-cream-50 dark:bg-slate-900 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-accent-orange">
-        </div>
-        <div>
-          <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Email Address</label>
-          <input type="email" name="email" required placeholder="alex@company.com" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-cream-50 dark:bg-slate-900 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-accent-orange">
-        </div>
-        <div>
-          <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Message</label>
-          <textarea name="message" rows="3" required placeholder="Tell me about your product or role..." class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-cream-50 dark:bg-slate-900 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-accent-orange"></textarea>
-        </div>
-
-        <div id="contact-feedback" class="hidden p-2.5 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 text-xs font-medium text-center">
-          Message sent! Cassiopeia will reach out promptly.
-        </div>
-
-        <button id="contact-submit-btn" type="submit" class="w-full py-2.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-semibold text-xs flex items-center justify-center gap-2 hover:opacity-90 transition">
-          <span>Send Message</span>
-          <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
-        </button>
-      </form>
     </div>
   </div>
-</div>
 
   <!-- Custom Script -->
   <script src="script.js"></script>
